@@ -11,11 +11,11 @@ import { useAuthStore } from '#/store';
 import { generateAccess } from './access';
 
 /**
- * 通用守卫配置
- * @param router
+ * 通用路由守卫配置
+ * @param {Router} router - Vue Router 实例
  */
 function setupCommonGuard(router: Router) {
-  // 记录已经加载的页面
+  /** 记录已加载的页面路径 */
   const loadedPaths = new Set<string>();
 
   router.beforeEach(async (to) => {
@@ -29,8 +29,7 @@ function setupCommonGuard(router: Router) {
   });
 
   router.afterEach((to) => {
-    // 记录页面是否加载,如果已经加载，后续的页面切换动画等效果不在重复执行
-
+    // 记录页面是否已加载，避免重复执行页面切换动画
     loadedPaths.add(to.path);
 
     // 关闭页面加载进度条
@@ -42,7 +41,7 @@ function setupCommonGuard(router: Router) {
 
 /**
  * 权限访问守卫配置
- * @param router
+ * @param {Router} router - Vue Router 实例
  */
 function setupAccessGuard(router: Router) {
   router.beforeEach(async (to, from) => {
@@ -50,8 +49,9 @@ function setupAccessGuard(router: Router) {
     const userStore = useUserStore();
     const authStore = useAuthStore();
 
-    // 基本路由，这些路由不需要进入权限拦截
+    // 核心路由，这些路由不需要权限拦截
     if (coreRouteNames.includes(to.name as string)) {
+      // 如果已登录，访问登录页则跳转到默认首页
       if (to.path === LOGIN_PATH && accessStore.accessToken) {
         return decodeURIComponent(
           (to.query?.redirect as string) ||
@@ -62,51 +62,49 @@ function setupAccessGuard(router: Router) {
       return true;
     }
 
-    // accessToken 检查
+    // 检查 accessToken 是否存在
     if (!accessStore.accessToken) {
-      // 明确声明忽略权限访问权限，则可以访问
+      // 忽略权限检查的页面可直接访问
       if (to.meta.ignoreAccess) {
         return true;
       }
 
-      // 没有访问权限，跳转登录页面
+      // 未登录，跳转到登录页面
       if (to.fullPath !== LOGIN_PATH) {
         return {
           path: LOGIN_PATH,
-          // 如不需要，直接删除 query
           query:
             to.fullPath === DEFAULT_HOME_PATH
               ? {}
               : { redirect: encodeURIComponent(to.fullPath) },
-          // 携带当前跳转的页面，登录后重新跳转该页面
-          replace: true,
+          replace: true, // 替换当前记录，避免返回时重复跳转
         };
       }
       return to;
     }
 
-    // 是否已经生成过动态路由
+    // 检查是否已经生成过动态路由
     if (accessStore.isAccessChecked) {
       return true;
     }
 
-    // 生成路由表
-    // 当前登录用户拥有的角色标识列表
+    // 获取用户信息和角色
     const userInfo = userStore.userInfo || (await authStore.fetchUserInfo());
     const userRoles = userInfo.roles ?? [];
 
-    // 生成菜单和路由
+    // 生成菜单和动态路由
     const { accessibleMenus, accessibleRoutes } = await generateAccess({
       roles: userRoles,
       router,
-      // 则会在菜单中显示，但是访问会被重定向到403
-      routes: accessRoutes,
+      routes: accessRoutes, // 需要进行权限判断的路由
     });
 
-    // 保存菜单信息和路由信息
+    // 保存菜单和路由信息
     accessStore.setAccessMenus(accessibleMenus);
     accessStore.setAccessRoutes(accessibleRoutes);
     accessStore.setIsAccessChecked(true);
+
+    /** 计算跳转路径 */
     const redirectPath = (from.query.redirect ??
       (to.path === DEFAULT_HOME_PATH
         ? userInfo.homePath || DEFAULT_HOME_PATH
@@ -120,13 +118,13 @@ function setupAccessGuard(router: Router) {
 }
 
 /**
- * 项目守卫配置
- * @param router
+ * 配置项目的路由守卫
+ * @param {Router} router - Vue Router 实例
  */
 function createRouterGuard(router: Router) {
-  /** 通用 */
+  /** 配置通用守卫 */
   setupCommonGuard(router);
-  /** 权限访问 */
+  /** 配置权限访问守卫 */
   setupAccessGuard(router);
 }
 

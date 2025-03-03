@@ -21,6 +21,17 @@ const fallbackNotFoundRoute: RouteRecordRaw = {
 
 /** 基本路由，这些路由是必须存在的 */
 const coreRoutes: RouteRecordRaw[] = [
+  // {
+  //   name: 'Home',
+  //   path: 'home',
+  //   component: Login,
+  //   meta: {
+  //     hideInMenu: true,
+  //     hideInTab: true,
+  //     title: '登录成功',
+  //   },
+  // },
+
   /**
    * 根路由
    * 使用基础布局，作为所有页面的父级容器，子级就不必配置BasicLayout。
@@ -86,7 +97,7 @@ const coreRoutes: RouteRecordRaw[] = [
         path: 'register',
         component: () => import('#/views/_core/authentication/register.vue'),
         meta: {
-          title: $t('page.auth.register'),
+          title: '注册',
         },
       },
     ],
