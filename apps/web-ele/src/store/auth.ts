@@ -75,6 +75,10 @@ export const useAuthStore = defineStore('auth', () => {
     };
   }
 
+  /**
+   *  退出登录
+   * @param redirect  是否跳转到登录页
+   */
   async function logout(redirect: boolean = true) {
     try {
       await logoutApi();
@@ -95,6 +99,9 @@ export const useAuthStore = defineStore('auth', () => {
     });
   }
 
+  /**
+   *  获取用户信息
+   */
   async function fetchUserInfo() {
     let userInfo: null | UserInfo = null;
     userInfo = await getUserInfoApi();
