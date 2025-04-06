@@ -5,19 +5,17 @@ import type { RouteKey } from '@elegant-router/types';
 import { SimpleScrollbar } from '@sa/materials';
 import { GLOBAL_HEADER_MENU_ID, GLOBAL_SIDER_MENU_ID } from '@/constants/app';
 import { useAppStore } from '@/store/modules/app';
-// import { useThemeStore } from '@/store/modules/theme';
-import { useRouteStore } from '@/store/modules/route';
-import { useRouterPush } from '@/hooks/common/router';
+import { useBlogStore } from '@/store/modules/blog';
 import { useMenu, useMixMenuContext } from '../../../context';
 import MenuItem from '../components/menu-item.vue';
+import { useNavigation } from '../useNavigation';
 
 defineOptions({ name: 'ReversedHorizontalMixMenu' });
 
 const route = useRoute();
 const appStore = useAppStore();
-// const themeStore = useThemeStore();
-const routeStore = useRouteStore();
-const { routerPushByKeyWithMetaQuery } = useRouterPush();
+const blogStore = useBlogStore();
+
 const {
   firstLevelMenus,
   childLevelMenus,
@@ -31,7 +29,7 @@ function handleSelectMixMenu(key: RouteKey) {
   setActiveFirstLevelMenuKey(key);
 
   if (!isActiveFirstLevelMenuHasChildren.value) {
-    routerPushByKeyWithMetaQuery(key);
+    handleSelectMenu(key);
   }
 }
 
@@ -42,7 +40,7 @@ function updateExpandedKeys() {
     expandedKeys.value = [];
     return;
   }
-  expandedKeys.value = routeStore.getSelectedMenuKeyPath(selectedKey.value);
+  expandedKeys.value = blogStore.getSelectedMenuKeyPath(selectedKey.value);
 }
 
 watch(
@@ -52,6 +50,11 @@ watch(
   },
   { immediate: true }
 );
+
+const { navigate } = useNavigation();
+function handleSelectMenu(key: string) {
+  navigate(key);
+}
 </script>
 
 <template>
@@ -63,18 +66,19 @@ watch(
       :default-active="activeFirstLevelMenuKey"
       @select="val => handleSelectMixMenu(val as RouteKey)"
     >
-      <MenuItem v-for="item in firstLevelMenus" :key="item.key" :item="item" :index="item.key" />
+      <MenuItem v-for="item in firstLevelMenus" :key="item.path" :item="item" :index="item.path" />
     </ElMenu>
   </Teleport>
+
   <Teleport :to="`#${GLOBAL_SIDER_MENU_ID}`">
     <SimpleScrollbar>
       <ElMenu
         mode="vertical"
         :default-active="selectedKey"
         :collapse="appStore.siderCollapse"
-        @select="val => routerPushByKeyWithMetaQuery(val as RouteKey)"
+        @select="val => handleSelectMenu(val as RouteKey)"
       >
-        <MenuItem v-for="item in childLevelMenus" :key="item.key" :item="item" :index="item.key" />
+        <MenuItem v-for="item in childLevelMenus" :key="item.path" :item="item" :index="item.path" />
       </ElMenu>
     </SimpleScrollbar>
   </Teleport>

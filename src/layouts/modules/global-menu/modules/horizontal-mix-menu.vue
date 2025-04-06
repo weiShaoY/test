@@ -3,7 +3,7 @@ import type { RouteKey } from '@elegant-router/types';
 import { GLOBAL_HEADER_MENU_ID, GLOBAL_SIDER_MENU_ID } from '@/constants/app';
 import { useAppStore } from '@/store/modules/app';
 import { useThemeStore } from '@/store/modules/theme';
-import { useRouterPush } from '@/hooks/common/router';
+import { useNavigation } from '../useNavigation';
 import FirstLevelMenu from '../components/first-level-menu.vue';
 import { useMenu, useMixMenuContext } from '../../../context';
 import MenuItem from '../components/menu-item.vue';
@@ -14,16 +14,20 @@ defineOptions({
 
 const appStore = useAppStore();
 const themeStore = useThemeStore();
-const { routerPushByKeyWithMetaQuery } = useRouterPush();
-const { allMenus, childLevelMenus, activeFirstLevelMenuKey, setActiveFirstLevelMenuKey } = useMixMenuContext();
+const { allMenuList, childLevelMenus, activeFirstLevelMenuKey, setActiveFirstLevelMenuKey } = useMixMenuContext();
 const { selectedKey } = useMenu();
 
-function handleSelectMixMenu(menu: App.Global.Menu) {
-  setActiveFirstLevelMenuKey(menu.key);
+function handleSelectMixMenu(menu: BlogType.BlogMenuItem) {
+  setActiveFirstLevelMenuKey(menu.path);
 
   if (!menu.children?.length) {
-    routerPushByKeyWithMetaQuery(menu.routeKey);
+    handleSelectMenu(menu.path);
   }
+}
+
+const { navigate } = useNavigation();
+function handleSelectMenu(key: string) {
+  navigate(key);
 }
 </script>
 
@@ -34,14 +38,14 @@ function handleSelectMixMenu(menu: App.Global.Menu) {
       class="w-full"
       mode="horizontal"
       :default-active="selectedKey"
-      @select="val => routerPushByKeyWithMetaQuery(val as RouteKey)"
+      @select="val => handleSelectMenu(val as RouteKey)"
     >
-      <MenuItem v-for="item in childLevelMenus" :key="item.key" :item="item" :index="item.key" />
+      <MenuItem v-for="item in childLevelMenus" :key="item.path" :item="item" :index="item.path" />
     </ElMenu>
   </Teleport>
   <Teleport :to="`#${GLOBAL_SIDER_MENU_ID}`">
     <FirstLevelMenu
-      :menus="allMenus"
+      :menu-list="allMenuList"
       :active-menu-key="activeFirstLevelMenuKey"
       :sider-collapse="appStore.siderCollapse"
       :dark-mode="themeStore.darkMode"

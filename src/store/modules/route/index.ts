@@ -38,7 +38,7 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
    */
   const authRouteMode = ref(import.meta.env.VITE_AUTH_ROUTE_MODE);
 
-  /** Home route key */
+  /** 首页路由地址 */
   const routeHome = ref(import.meta.env.VITE_ROUTE_HOME);
 
   /**
@@ -236,6 +236,7 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
     const sortRoutes = sortRoutesByOrder(allRoutes);
 
     const vueRoutes = getAuthVueRoutes(sortRoutes);
+    console.log('%c Line:240 🥟 vueRoutes', 'color:#b03734', vueRoutes);
 
     resetVueRoutes();
 
@@ -309,9 +310,10 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
   }
 
   /**
-   * Get selected menu key path
+   * 获取选中的菜单键路径
    *
-   * @param selectedKey Selected menu key
+   * @param selectedKey 选中的菜单键
+   * @returns 选中的菜单键路径数组
    */
   function getSelectedMenuKeyPath(selectedKey: string) {
     return getSelectedMenuKeyPathByKey(selectedKey, menus.value);

@@ -18,11 +18,21 @@ export function useRouterPush(inSetup = true) {
 
   const routerBack = router.back;
 
-  interface RouterPushOptions {
+  /** 路由跳转选项; */
+  type RouterPushOptions = {
+    /** 路由查询参数 */
     query?: Record<string, string>;
-    params?: Record<string, string>;
-  }
 
+    /** 路由动态参数 */
+    params?: Record<string, string>;
+  };
+
+  /**
+   * 根据路由键名跳转
+   *
+   * @param key 路由键名
+   * @param options 路由选项
+   */
   async function routerPushByKey(key: RouteKey, options?: RouterPushOptions) {
     const { query, params } = options || {};
 
@@ -41,6 +51,11 @@ export function useRouterPush(inSetup = true) {
     return routerPush(routeLocation);
   }
 
+  /**
+   * 根据路由键名跳转并带上 meta 中的 query
+   *
+   * @param key 路由键名
+   */
   function routerPushByKeyWithMetaQuery(key: RouteKey) {
     const allRoutes = router.getRoutes();
     const meta = allRoutes.find(item => item.name === key)?.meta || null;
@@ -54,6 +69,7 @@ export function useRouterPush(inSetup = true) {
     return routerPushByKey(key, { query });
   }
 
+  /** 跳转到首页 */
   async function toHome() {
     return routerPushByKey('root');
   }

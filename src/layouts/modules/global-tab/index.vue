@@ -31,6 +31,7 @@ type TabNamedNodeMap = NamedNodeMap & {
   [TAB_DATA_ID]: Attr;
 };
 
+/** 滚动到当前激活的标签页 */
 async function scrollToActiveTab() {
   await nextTick();
   if (!tabRef.value) return;
@@ -42,7 +43,7 @@ async function scrollToActiveTab() {
 
     const { value: tabId } = (child.attributes as TabNamedNodeMap)[TAB_DATA_ID];
 
-    if (tabId === tabStore.activeTabId) {
+    if (tabId === tabStore.activeTabPath) {
       const { left, width } = child.getBoundingClientRect();
       const clientX = left + width / 2;
 
@@ -55,6 +56,11 @@ async function scrollToActiveTab() {
   }
 }
 
+/**
+ * 根据鼠标点击的 X 坐标进行滚动
+ *
+ * @param clientX - 鼠标点击的 X 坐标
+ */
 function scrollByClientX(clientX: number) {
   const currentX = clientX - bsWrapperLeft.value;
   const deltaX = currentX - bsWrapperWidth.value / 2;
@@ -69,6 +75,12 @@ function scrollByClientX(clientX: number) {
   }
 }
 
+/**
+ * 获取上下文菜单禁用的键列表
+ *
+ * @param tabId - 选项卡 ID
+ * @returns 禁用的键列表
+ */
 function getContextMenuDisabledKeys(tabId: string) {
   const disabledKeys: App.Global.DropdownKey[] = [];
 
@@ -81,43 +93,65 @@ function getContextMenuDisabledKeys(tabId: string) {
 }
 
 async function handleCloseTab(tab: App.Global.Tab) {
-  await tabStore.removeTab(tab.id);
+  console.log('%c Line:96 🍑 tab', 'color:#fca650', tab);
+  await tabStore.removeTab(tab.path);
 
   if (themeStore.resetCacheStrategy === 'close') {
     routeStore.resetRouteCache(tab.routeKey);
   }
 }
-
+/** 刷新页面 */
 async function refresh() {
   appStore.reloadPage(500);
 }
 
 interface DropdownConfig {
+  /** 是否显示上下文菜单 */
   visible: boolean;
+
+  /** 上下文菜单 X 坐标 */
   x: number;
+
+  /** 上下文菜单 Y 坐标 */
   y: number;
+
+  /** 关联的选项卡 ID */
   tabId: string;
 }
-
+/** 上下文菜单的状态 */
 const dropdown = ref<DropdownConfig>({
   visible: false,
   x: 0,
   y: 0,
   tabId: ''
 });
-
+/**
+ * 设置上下文菜单状态
+ *
+ * @param config - 需要更新的部分配置
+ */
 function setDropdown(config: Partial<DropdownConfig>) {
   Object.assign(dropdown.value, config);
 }
 
 let isClickContextMenu = false;
-
-function handleDropdownVisible(visible: boolean) {
+/**
+ * 处理上下文菜单的可见性变化
+ *
+ * @param visible - 是否可见
+ */
+function handleDropdownVisible(visible: boolean | undefined) {
   if (!isClickContextMenu) {
     setDropdown({ visible });
   }
 }
 
+/**
+ * 处理右键菜单事件
+ *
+ * @param e - 鼠标事件
+ * @param tabId - 选项卡 ID
+ */
 async function handleContextMenu(e: MouseEvent, tabId: string) {
   e.preventDefault();
 
@@ -139,11 +173,11 @@ async function handleContextMenu(e: MouseEvent, tabId: string) {
     isClickContextMenu = false;
   }, DURATION);
 }
-
+/** 初始化标签页存储 */
 function init() {
-  tabStore.initTabStore(route);
+  tabStore.initTabStore(route as RouterType.BlogRouteRecordRaw);
 }
-
+/** 移除焦点 */
 function removeFocus() {
   (document.activeElement as HTMLElement)?.blur();
 }
@@ -152,11 +186,11 @@ function removeFocus() {
 watch(
   () => route.fullPath,
   () => {
-    tabStore.addTab(route);
+    tabStore.addTab(route as RouterType.BlogRouteRecordRaw);
   }
 );
 watch(
-  () => tabStore.activeTabId,
+  () => tabStore.activeTabPath,
   () => {
     scrollToActiveTab();
   }
@@ -167,40 +201,54 @@ init();
 </script>
 
 <template>
-  <DarkModeContainer class="size-full flex-y-center px-16px shadow-tab">
+  <!-- 主题容器，包含整个 Tab 页 -->
+  <DarkModeContainer class="size-full flex-y-center px-[16px] shadow-tab">
+    <!-- 滚动区域外层容器 -->
     <div ref="bsWrapper" class="h-full flex-1-hidden">
+      <!-- 使用 BetterScroll 实现横向滚动 -->
       <BetterScroll ref="bsScroll" :options="{ scrollX: true, scrollY: false, click: !isPCFlag }" @click="removeFocus">
+        <!-- Tab 标签列表容器 -->
         <div
           ref="tabRef"
-          class="h-full flex pr-18px"
-          :class="[themeStore.tab.mode === 'chrome' ? 'items-end' : 'items-center gap-12px']"
+          class="h-full flex pr-[18px]"
+          :class="[themeStore.tab.mode === 'chrome' ? 'items-end' : 'items-center gap-[12px]']"
         >
+          <!-- 遍历所有 Tab 并渲染 -->
           <PageTab
             v-for="tab in tabStore.tabs"
-            :key="tab.id"
-            :[TAB_DATA_ID]="tab.id"
+            :key="tab.path"
+            :[TAB_DATA_ID]="tab.path"
             :mode="themeStore.tab.mode"
             :dark-mode="themeStore.darkMode"
-            :active="tab.id === tabStore.activeTabId"
+            :active="tab.path === tabStore.activeTabPath"
             :active-color="themeStore.themeColor"
-            :closable="!tabStore.isTabRetain(tab.id)"
+            :closable="!tabStore.isTabRetain(tab.path)"
             @click="tabStore.switchRouteByTab(tab)"
             @close="handleCloseTab(tab)"
-            @contextmenu="handleContextMenu($event, tab.id)"
+            @contextmenu="handleContextMenu($event, tab.path)"
           >
+            <!-- Tab 前缀图标 -->
             <template #prefix>
-              <SvgIcon :icon="tab.icon" :local-icon="tab.localIcon" class="inline-block align-text-bottom text-16px" />
+              <SvgIcon
+                :icon="tab.icon"
+                :local-icon="tab.localIcon"
+                class="inline-block align-text-bottom text-[16px]"
+              />
             </template>
-            <div class="max-w-240px ellipsis-text">{{ tab.label }}</div>
+            <!-- Tab 名称 -->
+            <div class="max-w-[240px] ellipsis-text">{{ tab.label }}</div>
           </PageTab>
         </div>
       </BetterScroll>
     </div>
+    <!-- 刷新按钮 -->
     <div>
       <ReloadButton :loading="!appStore.reloadFlag" @click="refresh" />
     </div>
+    <!-- 全屏切换按钮 -->
     <FullScreen :full="appStore.fullContent" @click="appStore.toggleFullContent" />
   </DarkModeContainer>
+  <!-- 右键菜单 -->
   <ContextMenu
     :visible="dropdown.visible"
     :tab-id="dropdown.tabId"

@@ -27,7 +27,8 @@ const customRoutes: CustomRoute[] = [
         meta: {
           title: 'exception_403',
           i18nKey: 'route.exception_403',
-          icon: 'ic:baseline-block'
+          icon: 'ic:baseline-block',
+          activeMenu: 'exception_404'
         }
       },
       {

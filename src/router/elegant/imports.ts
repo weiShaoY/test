@@ -15,15 +15,14 @@ export const layouts: Record<RouteLayout, RouteComponent | (() => Promise<RouteC
 };
 
 export const views: Record<LastLevelRouteKey, RouteComponent | (() => Promise<RouteComponent>)> = {
-  403: () => import("@/views/_builtin/403/index.vue"),
-  404: () => import("@/views/_builtin/404/index.vue"),
-  500: () => import("@/views/_builtin/500/index.vue"),
-  "iframe-page": () => import("@/views/_builtin/iframe-page/[url].vue"),
-  login: () => import("@/views/_builtin/login/index.vue"),
+  aaa: () => import("@/views/aaa/index.vue"),
   about: () => import("@/views/about/index.vue"),
   alova_request: () => import("@/views/alova/request/index.vue"),
   alova_scenes: () => import("@/views/alova/scenes/index.vue"),
   alova_user: () => import("@/views/alova/user/index.vue"),
+  bbb_bbb1: () => import("@/views/bbb/bbb1/index.vue"),
+  ccc_ccc1: () => import("@/views/ccc/ccc1/index.vue"),
+  ccc: () => import("@/views/ccc/index.vue"),
   "function_hide-child_one": () => import("@/views/function/hide-child/one/index.vue"),
   "function_hide-child_three": () => import("@/views/function/hide-child/three/index.vue"),
   "function_hide-child_two": () => import("@/views/function/hide-child/two/index.vue"),

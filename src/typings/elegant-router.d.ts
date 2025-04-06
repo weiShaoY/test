@@ -31,14 +31,16 @@ declare module "@elegant-router/types" {
     "document_antd": "/document/antd";
     "document_element-plus": "/document/element-plus";
     "document_alova": "/document/alova";
-    "403": "/403";
-    "404": "/404";
-    "500": "/500";
+    "aaa": "/aaa";
     "about": "/about";
     "alova": "/alova";
     "alova_request": "/alova/request";
     "alova_scenes": "/alova/scenes";
     "alova_user": "/alova/user";
+    "bbb": "/bbb";
+    "bbb_bbb1": "/bbb/bbb1";
+    "ccc": "/ccc";
+    "ccc_ccc1": "/ccc/ccc1";
     "function": "/function";
     "function_hide-child": "/function/hide-child";
     "function_hide-child_one": "/function/hide-child/one";
@@ -50,8 +52,6 @@ declare module "@elegant-router/types" {
     "function_tab": "/function/tab";
     "function_toggle-auth": "/function/toggle-auth";
     "home": "/home";
-    "iframe-page": "/iframe-page/:url";
-    "login": "/login/:module(pwd-login|code-login|register|reset-pwd|bind-wechat)?";
     "manage": "/manage";
     "manage_menu": "/manage/menu";
     "manage_role": "/manage/role";
@@ -133,15 +133,13 @@ declare module "@elegant-router/types" {
    */
   export type FirstLevelRouteKey = Extract<
     RouteKey,
-    | "403"
-    | "404"
-    | "500"
+    | "aaa"
     | "about"
     | "alova"
+    | "bbb"
+    | "ccc"
     | "function"
     | "home"
-    | "iframe-page"
-    | "login"
     | "manage"
     | "multi-menu"
     | "plugin"
@@ -164,15 +162,14 @@ declare module "@elegant-router/types" {
    */
   export type LastLevelRouteKey = Extract<
     RouteKey,
-    | "403"
-    | "404"
-    | "500"
-    | "iframe-page"
-    | "login"
+    | "aaa"
     | "about"
     | "alova_request"
     | "alova_scenes"
     | "alova_user"
+    | "bbb_bbb1"
+    | "ccc_ccc1"
+    | "ccc"
     | "function_hide-child_one"
     | "function_hide-child_three"
     | "function_hide-child_two"

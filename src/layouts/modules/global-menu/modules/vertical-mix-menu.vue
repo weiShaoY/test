@@ -6,14 +6,14 @@ import { useBoolean } from '@sa/hooks';
 import type { RouteKey } from '@elegant-router/types';
 import { useAppStore } from '@/store/modules/app';
 import { useThemeStore } from '@/store/modules/theme';
-import { useRouteStore } from '@/store/modules/route';
-import { useRouterPush } from '@/hooks/common/router';
-import { $t } from '@/locales';
+import { useBlogStore } from '@/store';
 import { GLOBAL_SIDER_MENU_ID } from '@/constants/app';
 import { useMenu, useMixMenuContext } from '../../../context';
 import FirstLevelMenu from '../components/first-level-menu.vue';
 import GlobalLogo from '../../global-logo/index.vue';
 import MenuItem from '../components/menu-item.vue';
+
+import { useNavigation } from '../useNavigation';
 
 defineOptions({
   name: 'VerticalMixMenu'
@@ -22,32 +22,40 @@ defineOptions({
 const route = useRoute();
 const appStore = useAppStore();
 const themeStore = useThemeStore();
-const routeStore = useRouteStore();
-const { routerPushByKeyWithMetaQuery } = useRouterPush();
+const blogStore = useBlogStore();
 const { bool: drawerVisible, setBool: setDrawerVisible } = useBoolean();
 const {
-  allMenus,
+  allMenuList,
   childLevelMenus,
   activeFirstLevelMenuKey,
   setActiveFirstLevelMenuKey,
   getActiveFirstLevelMenuKey
   //
 } = useMixMenuContext();
+
 const { selectedKey } = useMenu();
 
+/** 计算是否使用深色模式（仅在不是暗黑模式且侧边栏反色时为 true） */
 const inverted = computed(() => !themeStore.darkMode && themeStore.sider.inverted);
 
+/** 计算是否有子菜单 */
 const hasChildMenus = computed(() => childLevelMenus.value.length > 0);
 
+/** 计算抽屉菜单是否可见（有子菜单并且抽屉打开或侧边栏固定时可见 */
 const showDrawer = computed(() => hasChildMenus.value && (drawerVisible.value || appStore.mixSiderFixed));
 
-function handleSelectMixMenu(menu: App.Global.Menu) {
-  setActiveFirstLevelMenuKey(menu.key);
+/**
+ * 处理菜单选择事件
+ *
+ * @param menu 选中的菜单项
+ */
+function handleSelectMixMenu(menu: BlogType.BlogMenuItem) {
+  setActiveFirstLevelMenuKey(menu.path);
 
   if (menu.children?.length) {
     setDrawerVisible(true);
   } else {
-    routerPushByKeyWithMetaQuery(menu.routeKey);
+    handleSelectMenu(menu.path);
   }
 }
 
@@ -66,7 +74,7 @@ function updateExpandedKeys() {
     expandedKeys.value = [];
     return;
   }
-  expandedKeys.value = routeStore.getSelectedMenuKeyPath(selectedKey.value);
+  expandedKeys.value = blogStore.getSelectedMenuKeyPath(selectedKey.value);
 }
 
 watch(
@@ -76,13 +84,18 @@ watch(
   },
   { immediate: true }
 );
+
+const { navigate } = useNavigation();
+function handleSelectMenu(key: string) {
+  navigate(key);
+}
 </script>
 
 <template>
   <Teleport :to="`#${GLOBAL_SIDER_MENU_ID}`">
     <div class="h-full flex" @mouseleave="handleResetActiveMenu">
       <FirstLevelMenu
-        :menus="allMenus"
+        :menu-list="allMenuList"
         :active-menu-key="activeFirstLevelMenuKey"
         :inverted="inverted"
         :sider-collapse="appStore.siderCollapse"
@@ -102,8 +115,8 @@ watch(
           :inverted="inverted"
           :style="{ width: showDrawer ? themeStore.sider.mixChildMenuWidth + 'px' : '0px' }"
         >
-          <header class="flex-y-center justify-between px-12px" :style="{ height: themeStore.header.height + 'px' }">
-            <h2 class="text-16px text-primary font-bold">{{ $t('system.title') }}</h2>
+          <header class="flex-y-center justify-between px-[12px]" :style="{ height: themeStore.header.height + 'px' }">
+            <h2 class="text-[16px] text-primary font-bold">weiShaoY</h2>
             <PinToggler
               :pin="appStore.mixSiderFixed"
               :class="{ 'text-white:88 !hover:text-white': inverted }"
@@ -111,12 +124,8 @@ watch(
             />
           </header>
           <SimpleScrollbar>
-            <ElMenu
-              mode="vertical"
-              :default-active="selectedKey"
-              @select="val => routerPushByKeyWithMetaQuery(val as RouteKey)"
-            >
-              <MenuItem v-for="item in childLevelMenus" :key="item.key" :item="item" :index="item.key" />
+            <ElMenu mode="vertical" :default-active="selectedKey" @select="val => handleSelectMenu(val as RouteKey)">
+              <MenuItem v-for="item in childLevelMenus" :key="item.path" :item="item" :index="item.path" />
             </ElMenu>
           </SimpleScrollbar>
         </DarkModeContainer>

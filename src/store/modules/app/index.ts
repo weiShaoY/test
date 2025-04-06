@@ -8,13 +8,11 @@ import { $t, setLocale } from '@/locales';
 import { setDayjsLocale } from '@/locales/dayjs';
 import { localStg } from '@/utils/storage';
 import { useRouteStore } from '../route';
-import { useTabStore } from '../tab';
 import { useThemeStore } from '../theme';
 
 export const useAppStore = defineStore(SetupStoreId.App, () => {
   const themeStore = useThemeStore();
   const routeStore = useRouteStore();
-  const tabStore = useTabStore();
   const scope = effectScope();
   const breakpoints = useBreakpoints(breakpointsTailwind);
   const { bool: themeDrawerVisible, setTrue: openThemeDrawer, setFalse: closeThemeDrawer } = useBoolean();
@@ -28,13 +26,13 @@ export const useAppStore = defineStore(SetupStoreId.App, () => {
     toggle: toggleMixSiderFixed
   } = useBoolean(localStg.get('mixSiderFixed') === 'Y');
 
-  /** Is mobile layout */
+  /** 是否为移动布局 */
   const isMobile = breakpoints.smaller('sm');
 
   /**
-   * Reload page
+   * 重新加载页面
    *
-   * @param duration Duration time
+   * @param duration 持续时间
    */
   async function reloadPage(duration = 300) {
     setReloadFlag(false);
@@ -78,14 +76,14 @@ export const useAppStore = defineStore(SetupStoreId.App, () => {
     setDayjsLocale(locale.value);
   }
 
-  // watch store
+  // 监听 store
   scope.run(() => {
-    // watch isMobile, if is mobile, collapse sider
+    // 监听 isMobile，如果是移动设备，折叠菜单
     watch(
       isMobile,
       newValue => {
         if (newValue) {
-          // backup theme setting before is mobile
+          // 备份移动设备之前的主题设置
           localStg.set('backupThemeSettingBeforeIsMobile', {
             layout: themeStore.layout.mode,
             siderCollapse: siderCollapse.value
@@ -94,7 +92,7 @@ export const useAppStore = defineStore(SetupStoreId.App, () => {
           themeStore.setThemeLayout('vertical');
           setSiderCollapse(true);
         } else {
-          // when is not mobile, recover the backup theme setting
+          // 如果不是移动设备，恢复备份的主题设置
           const backup = localStg.get('backupThemeSettingBeforeIsMobile');
 
           if (backup) {
@@ -118,20 +116,17 @@ export const useAppStore = defineStore(SetupStoreId.App, () => {
       // update global menus by locale
       routeStore.updateGlobalMenusByLocale();
 
-      // update tabs by locale
-      tabStore.updateTabsByLocale();
-
       // set dayjs locale
       setDayjsLocale(locale.value);
     });
   });
 
-  // cache mixSiderFixed
+  // 缓存 mixSiderFixed
   useEventListener(window, 'beforeunload', () => {
     localStg.set('mixSiderFixed', mixSiderFixed.value ? 'Y' : 'N');
   });
 
-  /** On scope dispose */
+  /** 作用域销毁时的处理 */
   onScopeDispose(() => {
     scope.stop();
   });

@@ -7,7 +7,7 @@ import { transformColorWithOpacity } from '@sa/color';
 defineOptions({ name: 'FirstLevelMenu' });
 
 interface Props {
-  menus: App.Global.Menu[];
+  menuList: BlogType.BlogMenuItem[];
   activeMenuKey?: string;
   inverted?: boolean;
   siderCollapse?: boolean;
@@ -18,22 +18,45 @@ interface Props {
 const props = defineProps<Props>();
 
 interface Emits {
-  (e: 'select', menu: App.Global.Menu): boolean;
+  (e: 'select', menu: BlogType.BlogMenuItem): boolean;
   (e: 'toggleSiderCollapse'): void;
 }
 
 const emit = defineEmits<Emits>();
 
 interface MixMenuItemProps {
-  /** Menu item label */
-  label: App.Global.Menu['label'];
-  /** Menu item icon */
-  icon: App.Global.Menu['icon'];
-  /** Active menu item */
+  /**
+   * 菜单项的标签（名称）
+   *
+   * @example
+   *   仪表盘;
+   */
+  title: BlogType.BlogMenuItem['meta']['title'];
+
+  /**
+   * 菜单项的图标
+   *
+   * @example
+   *   <SvgIcon icon="home" />;
+   */
+  icon?: BlogType.BlogMenuItem['meta']['icon'];
+
+  /**
+   * 是否为当前激活的菜单项
+   *
+   * @example
+   *   true;
+   */
   active: boolean;
-  /** Mini size */
+
+  /**
+   * 是否为迷你模式（小尺寸显示）
+   *
+   * @default false
+   */
   isMini?: boolean;
 }
+
 const [DefineMixMenuItem, MixMenuItem] = createReusableTemplate<MixMenuItemProps>();
 
 const selectedBgColor = computed(() => {
@@ -45,7 +68,7 @@ const selectedBgColor = computed(() => {
   return darkMode ? dark : light;
 });
 
-function handleClickMixMenu(menu: App.Global.Menu) {
+function handleClickMixMenu(menu: BlogType.BlogMenuItem) {
   emit('select', menu);
 }
 
@@ -56,9 +79,9 @@ function toggleSiderCollapse() {
 
 <template>
   <!-- define component: MixMenuItem -->
-  <DefineMixMenuItem v-slot="{ label, icon, active, isMini }">
+  <DefineMixMenuItem v-slot="{ title, icon, active, isMini }">
     <div
-      class="mx-4px mb-6px flex-col-center cursor-pointer rounded-8px bg-transparent px-4px py-8px transition-300 hover:bg-[rgb(0,0,0,0.08)]"
+      class="mx-[4px] mb-[6px] flex-col-center cursor-pointer rounded-[8px] bg-transparent px-[4px] py-[8px] transition-300 hover:bg-[rgb(0,0,0,0.08)]"
       :class="{
         'text-primary selected-mix-menu': active,
         'text-white:65 hover:text-white': inverted,
@@ -67,10 +90,10 @@ function toggleSiderCollapse() {
     >
       <component :is="icon" :class="[isMini ? 'text-icon-small' : 'text-icon-large']" />
       <p
-        class="w-full ellipsis-text text-center text-12px transition-height-300"
-        :class="[isMini ? 'h-0 pt-0' : 'h-20px pt-4px']"
+        class="w-full ellipsis-text text-center text-[12px] transition-height-300"
+        :class="[isMini ? 'h-0 pt-0' : 'h-[20px] pt-[4px]']"
       >
-        {{ label }}
+        {{ title }}
       </p>
     </div>
   </DefineMixMenuItem>
@@ -80,11 +103,11 @@ function toggleSiderCollapse() {
     <slot></slot>
     <SimpleScrollbar>
       <MixMenuItem
-        v-for="menu in menus"
-        :key="menu.key"
-        :label="menu.label"
-        :icon="menu.icon"
-        :active="menu.key === activeMenuKey"
+        v-for="menu in menuList"
+        :key="menu.path"
+        :title="menu.meta.title"
+        :icon="menu.meta.icon"
+        :active="menu.path === activeMenuKey"
         :is-mini="siderCollapse"
         @click="handleClickMixMenu(menu)"
       />

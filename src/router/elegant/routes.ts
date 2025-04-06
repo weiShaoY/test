@@ -7,36 +7,12 @@ import type { GeneratedRoute } from '@elegant-router/types';
 
 export const generatedRoutes: GeneratedRoute[] = [
   {
-    name: '403',
-    path: '/403',
-    component: 'layout.blank$view.403',
+    name: 'aaa',
+    path: '/aaa',
+    component: 'layout.base$view.aaa',
     meta: {
-      title: '403',
-      i18nKey: 'route.403',
-      constant: true,
-      hideInMenu: true
-    }
-  },
-  {
-    name: '404',
-    path: '/404',
-    component: 'layout.blank$view.404',
-    meta: {
-      title: '404',
-      i18nKey: 'route.404',
-      constant: true,
-      hideInMenu: true
-    }
-  },
-  {
-    name: '500',
-    path: '/500',
-    component: 'layout.blank$view.500',
-    meta: {
-      title: '500',
-      i18nKey: 'route.500',
-      constant: true,
-      hideInMenu: true
+      title: 'aaa',
+      i18nKey: 'route.aaa'
     }
   },
   {
@@ -91,6 +67,46 @@ export const generatedRoutes: GeneratedRoute[] = [
           i18nKey: 'route.alova_user',
           icon: 'carbon:user-multiple',
           order: 2
+        }
+      }
+    ]
+  },
+  {
+    name: 'bbb',
+    path: '/bbb',
+    component: 'layout.base',
+    meta: {
+      title: 'bbb',
+      i18nKey: 'route.bbb'
+    },
+    children: [
+      {
+        name: 'bbb_bbb1',
+        path: '/bbb/bbb1',
+        component: 'view.bbb_bbb1',
+        meta: {
+          title: 'bbb_bbb1',
+          i18nKey: 'route.bbb_bbb1'
+        }
+      }
+    ]
+  },
+  {
+    name: 'ccc',
+    path: '/ccc',
+    component: 'layout.base',
+    meta: {
+      title: 'ccc',
+      i18nKey: 'route.ccc'
+    },
+    children: [
+      {
+        name: 'ccc_ccc1',
+        path: '/ccc/ccc1',
+        component: 'view.ccc_ccc1',
+        meta: {
+          title: 'ccc_ccc1',
+          i18nKey: 'route.ccc_ccc1'
         }
       }
     ]
@@ -222,31 +238,6 @@ export const generatedRoutes: GeneratedRoute[] = [
       i18nKey: 'route.home',
       icon: 'mdi:monitor-dashboard',
       order: 1
-    }
-  },
-  {
-    name: 'iframe-page',
-    path: '/iframe-page/:url',
-    component: 'layout.base$view.iframe-page',
-    props: true,
-    meta: {
-      title: 'iframe-page',
-      i18nKey: 'route.iframe-page',
-      constant: true,
-      hideInMenu: true,
-      keepAlive: true
-    }
-  },
-  {
-    name: 'login',
-    path: '/login/:module(pwd-login|code-login|register|reset-pwd|bind-wechat)?',
-    component: 'layout.blank$view.login',
-    props: true,
-    meta: {
-      title: 'login',
-      i18nKey: 'route.login',
-      constant: true,
-      hideInMenu: true
     }
   },
   {

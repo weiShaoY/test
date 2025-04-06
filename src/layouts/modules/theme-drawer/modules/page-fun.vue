@@ -24,9 +24,9 @@ const isWrapperScrollMode = computed(() => themeStore.layout.scrollMode === 'wra
 
 <template>
   <ElDivider>{{ $t('theme.pageFunTitle') }}</ElDivider>
-  <TransitionGroup tag="div" name="setting-list" class="flex-col-stretch gap-12px">
+  <TransitionGroup tag="div" name="setting-list" class="flex-col-stretch gap-[12px]">
     <SettingItem key="1" :label="$t('theme.resetCacheStrategy.title')">
-      <ElSelect v-model="themeStore.resetCacheStrategy" size="small" class="w-120px">
+      <ElSelect v-model="themeStore.resetCacheStrategy" size="small" class="w-[120px]">
         <ElOption
           v-for="{ label, value } in translateOptions(resetCacheStrategyOptions)"
           :key="value"
@@ -36,7 +36,7 @@ const isWrapperScrollMode = computed(() => themeStore.layout.scrollMode === 'wra
       </ElSelect>
     </SettingItem>
     <SettingItem key="1" :label="$t('theme.scrollMode.title')">
-      <ElSelect v-model="themeStore.layout.scrollMode" size="small" class="w-120px">
+      <ElSelect v-model="themeStore.layout.scrollMode" size="small" class="w-[120px]">
         <ElOption
           v-for="{ label, value } in translateOptions(themeScrollModeOptions)"
           :key="value"
@@ -49,7 +49,7 @@ const isWrapperScrollMode = computed(() => themeStore.layout.scrollMode === 'wra
       <ElSwitch v-model="themeStore.page.animate" />
     </SettingItem>
     <SettingItem v-if="themeStore.page.animate" key="1-2" :label="$t('theme.page.mode.title')">
-      <ElSelect v-model="themeStore.page.animateMode" size="small" class="w-120px">
+      <ElSelect v-model="themeStore.page.animateMode" size="small" class="w-[120px]">
         <ElOption
           v-for="{ label, value } in translateOptions(themePageAnimationModeOptions)"
           :key="value"
@@ -62,7 +62,7 @@ const isWrapperScrollMode = computed(() => themeStore.layout.scrollMode === 'wra
       <ElSwitch v-model="themeStore.fixedHeaderAndTab" />
     </SettingItem>
     <SettingItem key="3" :label="$t('theme.header.height')">
-      <ElInputNumber v-model="themeStore.header.height" size="small" :step="1" class="w-120px" />
+      <ElInputNumber v-model="themeStore.header.height" size="small" :step="1" class="w-[120px]" />
     </SettingItem>
     <SettingItem key="4" :label="$t('theme.header.breadcrumb.visible')">
       <ElSwitch v-model="themeStore.header.breadcrumb.visible" />
@@ -77,10 +77,10 @@ const isWrapperScrollMode = computed(() => themeStore.layout.scrollMode === 'wra
       <ElSwitch v-model="themeStore.tab.cache" />
     </SettingItem>
     <SettingItem v-if="themeStore.tab.visible" key="5-2" :label="$t('theme.tab.height')">
-      <ElInputNumber v-model="themeStore.tab.height" size="small" :step="1" class="w-120px" />
+      <ElInputNumber v-model="themeStore.tab.height" size="small" :step="1" class="w-[120px]" />
     </SettingItem>
     <SettingItem v-if="themeStore.tab.visible" key="5-3" :label="$t('theme.tab.mode.title')">
-      <ElSelect v-model="themeStore.tab.mode" size="small" class="w-120px">
+      <ElSelect v-model="themeStore.tab.mode" size="small" class="w-[120px]">
         <ElOption
           v-for="{ label, value } in translateOptions(themeTabModeOptions)"
           :key="value"
@@ -90,19 +90,19 @@ const isWrapperScrollMode = computed(() => themeStore.layout.scrollMode === 'wra
       </ElSelect>
     </SettingItem>
     <SettingItem v-if="layoutMode === 'vertical'" key="6-1" :label="$t('theme.sider.width')">
-      <ElInputNumber v-model="themeStore.sider.width" size="small" :step="1" class="w-120px" />
+      <ElInputNumber v-model="themeStore.sider.width" size="small" :step="1" class="w-[120px]" />
     </SettingItem>
     <SettingItem v-if="layoutMode === 'vertical'" key="6-2" :label="$t('theme.sider.collapsedWidth')">
-      <ElInputNumber v-model="themeStore.sider.collapsedWidth" size="small" :step="1" class="w-120px" />
+      <ElInputNumber v-model="themeStore.sider.collapsedWidth" size="small" :step="1" class="w-[120px]" />
     </SettingItem>
     <SettingItem v-if="isMixLayoutMode" key="6-3" :label="$t('theme.sider.mixWidth')">
-      <ElInputNumber v-model="themeStore.sider.mixWidth" size="small" :step="1" class="w-120px" />
+      <ElInputNumber v-model="themeStore.sider.mixWidth" size="small" :step="1" class="w-[120px]" />
     </SettingItem>
     <SettingItem v-if="isMixLayoutMode" key="6-4" :label="$t('theme.sider.mixCollapsedWidth')">
-      <ElInputNumber v-model="themeStore.sider.mixCollapsedWidth" size="small" :step="1" class="w-120px" />
+      <ElInputNumber v-model="themeStore.sider.mixCollapsedWidth" size="small" :step="1" class="w-[120px]" />
     </SettingItem>
     <SettingItem v-if="layoutMode === 'vertical-mix'" key="6-5" :label="$t('theme.sider.mixChildMenuWidth')">
-      <ElInputNumber v-model="themeStore.sider.mixChildMenuWidth" size="small" :step="1" class="w-120px" />
+      <ElInputNumber v-model="themeStore.sider.mixChildMenuWidth" size="small" :step="1" class="w-[120px]" />
     </SettingItem>
     <SettingItem key="7" :label="$t('theme.footer.visible')">
       <ElSwitch v-model="themeStore.footer.visible" />
@@ -111,7 +111,7 @@ const isWrapperScrollMode = computed(() => themeStore.layout.scrollMode === 'wra
       <ElSwitch v-model="themeStore.footer.fixed" />
     </SettingItem>
     <SettingItem v-if="themeStore.footer.visible" key="7-2" :label="$t('theme.footer.height')">
-      <ElInputNumber v-model="themeStore.footer.height" size="small" :step="1" class="w-120px" />
+      <ElInputNumber v-model="themeStore.footer.height" size="small" :step="1" class="w-[120px]" />
     </SettingItem>
     <SettingItem
       v-if="themeStore.footer.visible && layoutMode === 'horizontal-mix'"
@@ -129,12 +129,9 @@ const isWrapperScrollMode = computed(() => themeStore.layout.scrollMode === 'wra
         autosize
         type="text"
         size="small"
-        class="w-120px"
+        class="w-[120px]"
         placeholder="SoybeanAdmin"
       />
-    </SettingItem>
-    <SettingItem key="9" :label="$t('theme.header.multilingual.visible')">
-      <ElSwitch v-model="themeStore.header.multilingual.visible" />
     </SettingItem>
   </TransitionGroup>
 </template>
