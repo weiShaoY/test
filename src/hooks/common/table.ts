@@ -6,7 +6,7 @@ import { useBoolean, useHookTable } from '@sa/hooks';
 
 import { jsonClone } from '@sa/utils';
 
-import { computed, effectScope, onScopeDispose, reactive, ref, watch } from 'vue';
+import { computed, effectScope, onScopeDispose, reactive, ref } from 'vue';
 import { useAppStore } from '@/store/modules/app';
 
 /** 移除只读属性类型 */
@@ -219,15 +219,6 @@ export function useTable<A extends UI.TableApiFn>(config: UI.NaiveTableConfig<A>
 
     await getData();
   }
-
-  scope.run(() => {
-    watch(
-      () => appStore.locale,
-      () => {
-        reloadColumns();
-      }
-    );
-  });
 
   onScopeDispose(() => {
     scope.stop();

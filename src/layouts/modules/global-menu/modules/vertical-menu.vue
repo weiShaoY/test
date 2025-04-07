@@ -29,7 +29,7 @@ function updateExpandedKeys() {
     expandedKeys.value = [];
   }
   // 如果每次 要展开的菜单项
-  expandedKeys.value = blogStore.getSelectedMenuKeyPath(selectedKey.value);
+  expandedKeys.value = blogStore.menuFunc.getSelectedMenuKeyPath(selectedKey.value);
 }
 
 watch(

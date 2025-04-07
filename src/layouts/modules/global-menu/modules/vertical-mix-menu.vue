@@ -74,7 +74,7 @@ function updateExpandedKeys() {
     expandedKeys.value = [];
     return;
   }
-  expandedKeys.value = blogStore.getSelectedMenuKeyPath(selectedKey.value);
+  expandedKeys.value = blogStore.menuFunc.getSelectedMenuKeyPath(selectedKey.value);
 }
 
 watch(
