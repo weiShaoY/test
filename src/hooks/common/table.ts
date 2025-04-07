@@ -1,31 +1,54 @@
-import { computed, effectScope, onScopeDispose, reactive, ref, watch } from 'vue';
-import type { Ref } from 'vue';
 import type { PaginationEmits, PaginationProps } from 'element-plus';
-import { jsonClone } from '@sa/utils';
-import { useBoolean, useHookTable } from '@sa/hooks';
-import { useAppStore } from '@/store/modules/app';
-import { $t } from '@/locales';
 
+import type { Ref } from 'vue';
+
+import { useBoolean, useHookTable } from '@sa/hooks';
+
+import { jsonClone } from '@sa/utils';
+
+import { computed, effectScope, onScopeDispose, reactive, ref, watch } from 'vue';
+import { useAppStore } from '@/store/modules/app';
+
+/** 移除只读属性类型 */
 type RemoveReadonly<T> = {
   -readonly [key in keyof T]: T[key];
 };
 
+/** 表格数据类型 */
 type TableData = UI.TableData;
+
+/** 获取表格数据类型 */
 type GetTableData<A extends UI.TableApiFn> = UI.GetTableData<A>;
+
+/** 表格列类型 */
 type TableColumn<T> = UI.TableColumn<T>;
 
+/**
+ * 使用表格数据
+ *
+ * @template A 表格 API 函数类型
+ * @param {UI.NaiveTableConfig<A>} config 表格配置
+ * @returns 包含表格数据、加载状态、分页等的对象
+ */
 export function useTable<A extends UI.TableApiFn>(config: UI.NaiveTableConfig<A>) {
+  /** 作用域 */
   const scope = effectScope();
+
+  /** 应用存储 */
   const appStore = useAppStore();
 
+  /** 是否为移动设备 */
   const isMobile = computed(() => appStore.isMobile);
 
   const { apiFn, apiParams, immediate } = config;
 
+  /** 选择列键 */
   const SELECTION_KEY = '__selection__';
 
+  /** 展开列键 */
   const EXPAND_KEY = '__expand__';
 
+  /** 索引列键 */
   const INDEX_KEY = '__index__';
 
   const {
@@ -46,7 +69,7 @@ export function useTable<A extends UI.TableApiFn>(config: UI.NaiveTableConfig<A>
     transformer: res => {
       const { records = [], current = 1, size = 10, total = 0 } = res.data || {};
 
-      // Ensure that the size is greater than 0, If it is less than 0, it will cause paging calculation errors.
+      // 确保 size 大于 0，如果小于 0 则会导致分页计算错误。
       const pageSize = size <= 0 ? 10 : size;
 
       const recordsWithIndex = records.map((item, index) => {
@@ -65,23 +88,24 @@ export function useTable<A extends UI.TableApiFn>(config: UI.NaiveTableConfig<A>
     },
     getColumnChecks: cols => {
       const checks: UI.TableColumnCheck[] = [];
+
       cols.forEach(column => {
         if (column.type === 'selection') {
           checks.push({
             prop: SELECTION_KEY,
-            label: $t('common.check'),
+            label: '勾选',
             checked: true
           });
         } else if (column.type === 'expand') {
           checks.push({
             prop: EXPAND_KEY,
-            label: $t('common.expandColumn'),
+            label: '展开列',
             checked: true
           });
         } else if (column.type === 'index') {
           checks.push({
             prop: INDEX_KEY,
-            label: $t('common.index'),
+            label: '序号',
             checked: true
           });
         } else {
@@ -128,6 +152,7 @@ export function useTable<A extends UI.TableApiFn>(config: UI.NaiveTableConfig<A>
     immediate
   });
 
+  /** 分页配置 */
   const pagination: Partial<RemoveReadonly<PaginationProps & PaginationEmits>> = reactive({
     currentPage: 1,
     pageSize: 10,
@@ -135,7 +160,10 @@ export function useTable<A extends UI.TableApiFn>(config: UI.NaiveTableConfig<A>
     'current-change': (page: number) => {
       pagination.currentPage = page;
 
-      updateSearchParams({ current: page, size: pagination.pageSize! });
+      updateSearchParams({
+        current: page,
+        size: pagination.pageSize!
+      });
 
       getData();
 
@@ -145,14 +173,17 @@ export function useTable<A extends UI.TableApiFn>(config: UI.NaiveTableConfig<A>
       pagination.currentPage = 1;
       pagination.pageSize = pageSize;
 
-      updateSearchParams({ current: pagination.currentPage, size: pageSize });
+      updateSearchParams({
+        current: pagination.currentPage,
+        size: pageSize
+      });
 
       getData();
       return true;
     }
   });
 
-  // this is for mobile, if the system does not support mobile, you can use `pagination` directly
+  // 适用于移动设备的分页，如果系统不支持移动设备，可以直接使用 `pagination`
   const mobilePagination = computed(() => {
     const p: Partial<RemoveReadonly<PaginationProps & PaginationEmits>> = {
       ...pagination,
@@ -162,14 +193,19 @@ export function useTable<A extends UI.TableApiFn>(config: UI.NaiveTableConfig<A>
     return p;
   });
 
+  /**
+   * 更新分页配置
+   *
+   * @param {Partial<PaginationProps>} update 分页更新参数
+   */
   function updatePagination(update: Partial<PaginationProps>) {
     Object.assign(pagination, update);
   }
 
   /**
-   * get data by page number
+   * 根据页码获取数据
    *
-   * @param pageNum the page number. default is 1
+   * @param {number} [pageNum] 页码，默认值为 1. Default is `1`
    */
   async function getDataByPage(pageNum: number = 1) {
     updatePagination({
@@ -215,42 +251,59 @@ export function useTable<A extends UI.TableApiFn>(config: UI.NaiveTableConfig<A>
   };
 }
 
+/**
+ * 使用表格操作
+ *
+ * @template T 表格数据类型
+ * @param {Ref<T[]>} data 表格数据引用
+ * @param {Function} getData 获取数据的函数
+ * @returns {object} 包含表格操作方法的对象
+ */
 export function useTableOperate<T extends TableData = TableData>(data: Ref<T[]>, getData: () => Promise<void>) {
+  /** 抽屉可见状态 */
   const { bool: drawerVisible, setTrue: openDrawer, setFalse: closeDrawer } = useBoolean();
 
+  /** 操作类型 */
   const operateType = ref<UI.TableOperateType>('add');
 
+  /** 处理新增操作 */
   function handleAdd() {
     operateType.value = 'add';
     openDrawer();
   }
 
-  /** the editing row data */
+  /** 编辑的行数据 */
   const editingData: Ref<T | null> = ref(null);
 
+  /**
+   * 处理编辑操作
+   *
+   * @param {T['id']} id 编辑的行数据的 ID
+   */
   function handleEdit(id: T['id']) {
     operateType.value = 'edit';
     const findItem = data.value.find(item => item.id === id) || null;
+
     editingData.value = jsonClone(findItem);
 
     openDrawer();
   }
 
-  /** the checked row keys of table */
+  /** 表格选中行的键 */
   const checkedRowKeys = ref<string[]>([]);
 
-  /** the hook after the batch delete operation is completed */
+  /** 批量删除操作完成后的钩子 */
   async function onBatchDeleted() {
-    window.$message?.success($t('common.deleteSuccess'));
+    window.$message?.success('删除成功');
 
     checkedRowKeys.value = [];
 
     await getData();
   }
 
-  /** the hook after the delete operation is completed */
+  /** 删除操作完成后的钩子 */
   async function onDeleted() {
-    window.$message?.success($t('common.deleteSuccess'));
+    window.$message?.success('删除成功');
 
     await getData();
   }

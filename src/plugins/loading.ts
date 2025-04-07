@@ -1,6 +1,5 @@
 // @unocss-include
 import { getRgb } from '@sa/color';
-import { $t } from '@/locales';
 import { localStg } from '@/utils/storage';
 import systemLogo from '@/assets/svg-icon/logo.svg?raw';
 import { DARK_CLASS } from '@/constants/app';
@@ -42,7 +41,7 @@ export function setupLoading() {
         ${dot}
       </div>
     </div>
-    <h2 class="text-28px font-500 text-primary">${$t('system.title')}</h2>
+    <h2 class="text-28px font-500 text-primary">weiShaoY</h2>
   </div>`;
 
   const app = document.getElementById('app');

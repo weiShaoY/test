@@ -1,25 +1,36 @@
-import { effectScope, nextTick, onScopeDispose, ref, watch } from 'vue';
-import { defineStore } from 'pinia';
-import { breakpointsTailwind, useBreakpoints, useEventListener, useTitle } from '@vueuse/core';
 import { useBoolean } from '@sa/hooks';
-import { SetupStoreId } from '@/enum';
-import { router } from '@/router';
-import { $t, setLocale } from '@/locales';
-import { setDayjsLocale } from '@/locales/dayjs';
+
+import { breakpointsTailwind, useBreakpoints, useEventListener } from '@vueuse/core';
+
+import { defineStore } from 'pinia';
+
+import { effectScope, nextTick, onScopeDispose, watch } from 'vue';
 import { localStg } from '@/utils/storage';
+import { SetupStoreId } from '@/enum';
+
 import { useRouteStore } from '../route';
+
 import { useThemeStore } from '../theme';
 
 export const useAppStore = defineStore(SetupStoreId.App, () => {
   const themeStore = useThemeStore();
+
   const routeStore = useRouteStore();
+
   const scope = effectScope();
+
   const breakpoints = useBreakpoints(breakpointsTailwind);
+
   const { bool: themeDrawerVisible, setTrue: openThemeDrawer, setFalse: closeThemeDrawer } = useBoolean();
+
   const { bool: reloadFlag, setBool: setReloadFlag } = useBoolean(true);
+
   const { bool: fullContent, toggle: toggleFullContent } = useBoolean();
+
   const { bool: contentXScrollable, setBool: setContentXScrollable } = useBoolean();
+
   const { bool: siderCollapse, setBool: setSiderCollapse, toggle: toggleSiderCollapse } = useBoolean();
+
   const {
     bool: mixSiderFixed,
     setBool: setMixSiderFixed,
@@ -32,7 +43,7 @@ export const useAppStore = defineStore(SetupStoreId.App, () => {
   /**
    * 重新加载页面
    *
-   * @param duration 持续时间
+   * @param {number} duration 持续时间
    */
   async function reloadPage(duration = 300) {
     setReloadFlag(false);
@@ -50,31 +61,8 @@ export const useAppStore = defineStore(SetupStoreId.App, () => {
     }
   }
 
-  const locale = ref<App.I18n.LangType>(localStg.get('lang') || 'zh-CN');
-
-  const localeOptions: App.I18n.LangOption[] = [
-    { label: '中文', key: 'zh-CN' },
-    { label: 'English', key: 'en-US' }
-  ];
-
-  function changeLocale(lang: App.I18n.LangType) {
-    locale.value = lang;
-    setLocale(lang);
-    localStg.set('lang', lang);
-  }
-
-  /** Update document title by locale */
-  function updateDocumentTitleByLocale() {
-    const { i18nKey, title } = router.currentRoute.value.meta;
-
-    const documentTitle = i18nKey ? $t(i18nKey) : title;
-
-    useTitle(documentTitle);
-  }
-
-  function init() {
-    setDayjsLocale(locale.value);
-  }
+  /** 初始化 */
+  function init() {}
 
   // 监听 store
   scope.run(() => {
@@ -105,20 +93,10 @@ export const useAppStore = defineStore(SetupStoreId.App, () => {
           }
         }
       },
-      { immediate: true }
+      {
+        immediate: true
+      }
     );
-
-    // watch locale
-    watch(locale, () => {
-      // update document title by locale
-      updateDocumentTitleByLocale();
-
-      // update global menus by locale
-      routeStore.updateGlobalMenusByLocale();
-
-      // set dayjs locale
-      setDayjsLocale(locale.value);
-    });
   });
 
   // 缓存 mixSiderFixed
@@ -131,7 +109,7 @@ export const useAppStore = defineStore(SetupStoreId.App, () => {
     scope.stop();
   });
 
-  // init
+  // 初始化
   init();
 
   return {
@@ -139,9 +117,6 @@ export const useAppStore = defineStore(SetupStoreId.App, () => {
     reloadFlag,
     reloadPage,
     fullContent,
-    locale,
-    localeOptions,
-    changeLocale,
     themeDrawerVisible,
     openThemeDrawer,
     closeThemeDrawer,

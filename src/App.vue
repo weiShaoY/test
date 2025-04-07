@@ -1,18 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import type { WatermarkProps } from 'element-plus';
-import { useAppStore } from './store/modules/app';
+import zhCn from 'element-plus/es/locale/lang/zh-cn';
 import { useThemeStore } from './store/modules/theme';
-import { UILocales } from './locales/ui';
 
 defineOptions({ name: 'App' });
 
-const appStore = useAppStore();
 const themeStore = useThemeStore();
-
-const locale = computed(() => {
-  return UILocales[appStore.locale];
-});
 
 const watermarkProps = computed<WatermarkProps>(() => {
   return {
@@ -28,7 +22,7 @@ const watermarkProps = computed<WatermarkProps>(() => {
 </script>
 
 <template>
-  <ElConfigProvider :locale="locale">
+  <ElConfigProvider :locale="zhCn">
     <AppProvider>
       <ElWatermark class="h-full" v-bind="watermarkProps">
         <RouterView class="bg-layout" />

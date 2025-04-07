@@ -1,51 +1,14 @@
-import type { RouteLocationNormalizedLoaded, RouteRecordRaw, _RouteRecordBase } from 'vue-router';
 import type { ElegantConstRoute, LastLevelRouteKey, RouteKey, RouteMap } from '@elegant-router/types';
-import { $t } from '@/locales';
+
+import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router';
+
 import { useSvgIcon } from '@/hooks/common/icon';
 
 /**
- * Filter auth routes by roles
+ * 根据顺序排序路由
  *
- * @param routes Auth routes
- * @param roles Roles
- */
-export function filterAuthRoutesByRoles(routes: ElegantConstRoute[], roles: string[]) {
-  return routes.flatMap(route => filterAuthRouteByRoles(route, roles));
-}
-
-/**
- * Filter auth route by roles
- *
- * @param route Auth route
- * @param roles Roles
- */
-function filterAuthRouteByRoles(route: ElegantConstRoute, roles: string[]): ElegantConstRoute[] {
-  const routeRoles = (route.meta && route.meta.roles) || [];
-
-  // if the route's "roles" is empty, then it is allowed to access
-  const isEmptyRoles = !routeRoles.length;
-
-  // if the user's role is included in the route's "roles", then it is allowed to access
-  const hasPermission = routeRoles.some(role => roles.includes(role));
-
-  const filterRoute = { ...route };
-
-  if (filterRoute.children?.length) {
-    filterRoute.children = filterRoute.children.flatMap(item => filterAuthRouteByRoles(item, roles));
-  }
-
-  // Exclude the route if it has no children after filtering
-  if (filterRoute.children?.length === 0) {
-    return [];
-  }
-
-  return hasPermission || isEmptyRoles ? [filterRoute] : [];
-}
-
-/**
- * sort route by order
- *
- * @param route route
+ * @param route 路由
+ * @returns 排序后的路由
  */
 function sortRouteByOrder(route: ElegantConstRoute) {
   if (route.children?.length) {
@@ -57,9 +20,10 @@ function sortRouteByOrder(route: ElegantConstRoute) {
 }
 
 /**
- * sort routes by order
+ * 根据顺序排序路由数组
  *
- * @param routes routes
+ * @param routes 路由数组
+ * @returns 排序后的路由数组
  */
 export function sortRoutesByOrder(routes: ElegantConstRoute[]) {
   routes.sort((next, prev) => (Number(next.meta?.order) || 0) - (Number(prev.meta?.order) || 0));
@@ -69,9 +33,10 @@ export function sortRoutesByOrder(routes: ElegantConstRoute[]) {
 }
 
 /**
- * Get global menus by auth routes
+ * 根据权限路由获取全局菜单
  *
- * @param routes Auth routes
+ * @param routes 权限路由
+ * @returns 全局菜单
  */
 export function getGlobalMenusByAuthRoutes(routes: ElegantConstRoute[]) {
   const menus: App.Global.Menu[] = [];
@@ -92,68 +57,46 @@ export function getGlobalMenusByAuthRoutes(routes: ElegantConstRoute[]) {
 }
 
 /**
- * Update locale of global menus
+ * 根据路由获取全局菜单
  *
- * @param menus
- */
-export function updateLocaleOfGlobalMenus(menus: App.Global.Menu[]) {
-  const result: App.Global.Menu[] = [];
-
-  menus.forEach(menu => {
-    const { i18nKey, label, children } = menu;
-
-    const newLabel = i18nKey ? $t(i18nKey) : label;
-
-    const newMenu: App.Global.Menu = {
-      ...menu,
-      label: newLabel
-    };
-
-    if (children?.length) {
-      newMenu.children = updateLocaleOfGlobalMenus(children);
-    }
-
-    result.push(newMenu);
-  });
-
-  return result;
-}
-
-/**
- * Get global menu by route
- *
- * @param route
+ * @param route 路由
+ * @returns 全局菜单
  */
 function getGlobalMenuByBaseRoute(route: RouteLocationNormalizedLoaded | ElegantConstRoute) {
   const { SvgIconVNode } = useSvgIcon();
 
   const { name, path } = route;
-  const { title, i18nKey, icon = import.meta.env.VITE_MENU_ICON, localIcon, iconFontSize } = route.meta ?? {};
 
-  const label = i18nKey ? $t(i18nKey) : title!;
+  const { title, icon = import.meta.env.VITE_MENU_ICON, localIcon, iconFontSize } = route.meta ?? {};
+
+  const label = title || '';
 
   const menu: App.Global.Menu = {
     key: name as string,
     label,
-    i18nKey,
     routeKey: name as RouteKey,
     routePath: path as RouteMap[RouteKey],
-    icon: SvgIconVNode({ icon, localIcon, fontSize: iconFontSize || 20 })
+    icon: SvgIconVNode({
+      icon,
+      localIcon,
+      fontSize: iconFontSize || 20
+    })
   };
 
   return menu;
 }
 
 /**
- * Get cache route names
+ * 获取缓存路由名
  *
- * @param routes Vue routes (two levels)
+ * @param routes Vue 路由数组（两级）
+ * @returns 缓存路由名
  */
 export function getCacheRouteNames(routes: RouteRecordRaw[]) {
   const cacheNames: LastLevelRouteKey[] = [];
 
   routes.forEach(route => {
-    // only get last two level route, which has component
+    // 仅获取具有组件的最后两级路由
     route.children?.forEach(child => {
       if (child.component && child.meta?.keepAlive) {
         cacheNames.push(child.name as LastLevelRouteKey);
@@ -165,20 +108,22 @@ export function getCacheRouteNames(routes: RouteRecordRaw[]) {
 }
 
 /**
- * Is route exist by route name
+ * 根据路由名判断路由是否存在
  *
- * @param routeName
- * @param routes
+ * @param routeName 路由名
+ * @param routes 路由数组
+ * @returns 路由是否存在
  */
 export function isRouteExistByRouteName(routeName: RouteKey, routes: ElegantConstRoute[]) {
   return routes.some(route => recursiveGetIsRouteExistByRouteName(route, routeName));
 }
 
 /**
- * Recursive get is route exist by route name
+ * 递归判断路由是否存在
  *
- * @param route
- * @param routeName
+ * @param route 路由
+ * @param routeName 路由名
+ * @returns 路由是否存在
  */
 function recursiveGetIsRouteExistByRouteName(route: ElegantConstRoute, routeName: RouteKey) {
   let isExist = route.name === routeName;
@@ -195,10 +140,11 @@ function recursiveGetIsRouteExistByRouteName(route: ElegantConstRoute, routeName
 }
 
 /**
- * Get selected menu key path
+ * 根据选中菜单键获取选中菜单键路径
  *
- * @param selectedKey
- * @param menus
+ * @param selectedKey 选中菜单键
+ * @param menus 全局菜单
+ * @returns 选中菜单键路径数组
  */
 export function getSelectedMenuKeyPathByKey(selectedKey: string, menus: App.Global.Menu[]) {
   const keyPath: string[] = [];
@@ -214,15 +160,15 @@ export function getSelectedMenuKeyPathByKey(selectedKey: string, menus: App.Glob
 
     return find;
   });
-
   return keyPath;
 }
 
 /**
- * Find menu path
+ * 查找菜单路径
  *
- * @param targetKey Target menu key
- * @param menu Menu
+ * @param targetKey 目标菜单键
+ * @param menu 菜单
+ * @returns 菜单路径数组
  */
 function findMenuPath(targetKey: string, menu: App.Global.Menu): string[] | null {
   const path: string[] = [];
@@ -255,9 +201,10 @@ function findMenuPath(targetKey: string, menu: App.Global.Menu): string[] | null
 }
 
 /**
- * Transform menu to breadcrumb
+ * 将菜单转换为面包屑
  *
- * @param menu
+ * @param menu 菜单
+ * @returns 面包屑
  */
 function transformMenuToBreadcrumb(menu: App.Global.Menu) {
   const { children, ...rest } = menu;
@@ -274,16 +221,18 @@ function transformMenuToBreadcrumb(menu: App.Global.Menu) {
 }
 
 /**
- * Get breadcrumbs by route
+ * 根据路由获取面包屑
  *
- * @param route
- * @param menus
+ * @param route 路由
+ * @param menus 全局菜单数组
+ * @returns 面包屑数组
  */
 export function getBreadcrumbsByRoute(
   route: RouteLocationNormalizedLoaded,
   menus: App.Global.Menu[]
 ): App.Global.Breadcrumb[] {
   const key = route.name as string;
+
   const activeKey = route.meta?.activeMenu;
 
   for (const menu of menus) {
@@ -297,6 +246,7 @@ export function getBreadcrumbsByRoute(
       const parentKey = key.split(ROUTE_DEGREE_SPLITTER).slice(0, -1).join(ROUTE_DEGREE_SPLITTER);
 
       const breadcrumbMenu = getGlobalMenuByBaseRoute(route);
+
       if (parentKey !== activeKey) {
         return [transformMenuToBreadcrumb(breadcrumbMenu)];
       }
@@ -306,6 +256,7 @@ export function getBreadcrumbsByRoute(
 
     if (menu.children?.length) {
       const result = getBreadcrumbsByRoute(route, menu.children);
+
       if (result.length > 0) {
         return [transformMenuToBreadcrumb(menu), ...result];
       }
@@ -316,20 +267,26 @@ export function getBreadcrumbsByRoute(
 }
 
 /**
- * Transform menu to searchMenus
+ * 将菜单转换为搜索菜单
  *
- * @param menus - menus
- * @param treeMap
+ * @param menus 菜单数组
+ * @param treeMap 树形映射数组. Default is `[]`
+ * @returns 搜索菜单数组
  */
 export function transformMenuToSearchMenus(menus: App.Global.Menu[], treeMap: App.Global.Menu[] = []) {
-  if (menus && menus.length === 0) return [];
+  if (menus && menus.length === 0) {
+    return [];
+  }
+
   return menus.reduce((acc, cur) => {
     if (!cur.children) {
       acc.push(cur);
     }
+
     if (cur.children && cur.children.length > 0) {
       transformMenuToSearchMenus(cur.children, treeMap);
     }
+
     return acc;
   }, treeMap);
 }

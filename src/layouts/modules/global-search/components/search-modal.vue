@@ -1,36 +1,50 @@
 <script lang="ts" setup>
-import { computed, ref, shallowRef } from 'vue';
-import { useRouter } from 'vue-router';
-import { onKeyStroke, useDebounceFn } from '@vueuse/core';
 import type { InputInstance } from 'element-plus';
+
+import { onKeyStroke, useDebounceFn } from '@vueuse/core';
+
+import { computed, ref, shallowRef } from 'vue';
+
+import { useRouter } from 'vue-router';
 import { useRouteStore } from '@/store/modules/route';
 import { useAppStore } from '@/store/modules/app';
-import { $t } from '@/locales';
-import SearchResult from './search-result.vue';
+
 import SearchFooter from './search-footer.vue';
 
-defineOptions({ name: 'SearchModal' });
+import SearchResult from './search-result.vue';
+
+defineOptions({
+  name: 'SearchModal'
+});
 
 const router = useRouter();
+
 const appStore = useAppStore();
+
 const routeStore = useRouteStore();
 
 const isMobile = computed(() => appStore.isMobile);
 
 const keyword = ref('');
+
 const activePath = ref('');
+
 const resultOptions = shallowRef<App.Global.Menu[]>([]);
 
 const handleSearch = useDebounceFn(search, 300);
 
-const visible = defineModel<boolean>('show', { required: true });
+const visible = defineModel<boolean>('show', {
+  required: true
+});
 
 const searchInput = ref<InputInstance>();
 
 function search() {
   resultOptions.value = routeStore.searchMenus.filter(menu => {
     const trimKeyword = keyword.value.toLocaleLowerCase().trim();
-    const title = (menu.i18nKey ? $t(menu.i18nKey) : menu.label).toLocaleLowerCase();
+
+    const title = menu.label.toLocaleLowerCase();
+
     return trimKeyword && title.includes(trimKeyword);
   });
 
@@ -49,10 +63,16 @@ function handleClose() {
 /** key up */
 function handleUp() {
   const { length } = resultOptions.value;
-  if (length === 0) return;
+
+  if (length === 0) {
+    return;
+  }
 
   const index = getActivePathIndex();
-  if (index === -1) return;
+
+  if (index === -1) {
+    return;
+  }
 
   const activeIndex = index === 0 ? length - 1 : index - 1;
 
@@ -62,10 +82,16 @@ function handleUp() {
 /** key down */
 function handleDown() {
   const { length } = resultOptions.value;
-  if (length === 0) return;
+
+  if (length === 0) {
+    return;
+  }
 
   const index = getActivePathIndex();
-  if (index === -1) return;
+
+  if (index === -1) {
+    return;
+  }
 
   const activeIndex = index === length - 1 ? 0 : index + 1;
 
@@ -78,7 +104,10 @@ function getActivePathIndex() {
 
 /** key enter */
 function handleEnter() {
-  if (resultOptions.value?.length === 0 || activePath.value === '') return;
+  if (resultOptions.value?.length === 0 || activePath.value === '') {
+    return;
+  }
+
   handleClose();
   router.push(activePath.value);
 }
@@ -106,29 +135,26 @@ registerShortcut();
     :show-close="false"
     append-to-body
     class="search-modal fixed left-0 right-0"
-    :class="[isMobile ? 'size-full top-0px rounded-0' : 'w-630px top-50px']"
+    :class="[isMobile ? 'size-full top-[0px] rounded-0' : 'w-[630px] top-[50px]']"
     @open-auto-focus="setFocus"
     @close="handleClose"
   >
-    <ElInput
-      ref="searchInput"
-      v-model="keyword"
-      clearable
-      :placeholder="$t('common.keywordSearch')"
-      @input="handleSearch"
-    >
+    <ElInput ref="searchInput" v-model="keyword" clearable placeholder="请输入关键词搜索" @input="handleSearch">
       <template #prefix>
-        <icon-uil-search class="text-15px" />
+        <icon-uil-search class="text-[15px]" />
       </template>
+
       <template v-if="isMobile" #append>
-        <ElButton type="primary" plain @click="handleClose">{{ $t('common.cancel') }}</ElButton>
+        <ElButton type="primary" plain @click="handleClose">取消</ElButton>
       </template>
     </ElInput>
 
     <div>
-      <ElEmpty v-if="resultOptions.length === 0" :description="$t('common.noData')" :image-size="50" />
+      <ElEmpty v-if="resultOptions.length === 0" description="无数据" :image-size="50" />
+
       <SearchResult v-else v-model:path="activePath" :options="resultOptions" @enter="handleEnter" />
     </div>
+
     <template #footer>
       <SearchFooter v-if="!isMobile" />
     </template>
