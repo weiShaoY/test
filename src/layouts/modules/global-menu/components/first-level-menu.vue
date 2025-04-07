@@ -78,7 +78,7 @@ function toggleSiderCollapse() {
 </script>
 
 <template>
-  <!-- define component: MixMenuItem -->
+  <!-- 定义可复用的 MixMenuItem 组件 -->
   <DefineMixMenuItem v-slot="{ title, icon, active, isMini }">
     <div
       class="mx-[4px] mb-[6px] flex-col-center cursor-pointer rounded-[8px] bg-transparent px-[4px] py-[8px] transition-300 hover:bg-[rgb(0,0,0,0.08)]"
@@ -88,7 +88,10 @@ function toggleSiderCollapse() {
         '!text-white !bg-primary': active && inverted
       }"
     >
-      <component :is="icon" :class="[isMini ? 'text-icon-small' : 'text-icon-large']" />
+      <!-- 动态加载图标 -->
+      <SvgIcon v-if="icon" :icon="icon" :class="isMini ? 'text-icon-small' : 'text-icon-large'" />
+
+      <!-- 菜单项标签 -->
       <p
         class="w-full ellipsis-text text-center text-[12px] transition-height-300"
         :class="[isMini ? 'h-0 pt-0' : 'h-[20px] pt-[4px]']"
@@ -97,11 +100,14 @@ function toggleSiderCollapse() {
       </p>
     </div>
   </DefineMixMenuItem>
-  <!-- define component end: MixMenuItem -->
+  <!-- 定义结束 -->
+
+  <!-- 主布局 -->
 
   <div class="h-full flex-col-stretch flex-1-hidden">
     <slot></slot>
     <SimpleScrollbar>
+      <!-- 遍历菜单列表，渲染 MixMenuItem -->
       <MixMenuItem
         v-for="menu in menuList"
         :key="menu.path"
@@ -112,6 +118,8 @@ function toggleSiderCollapse() {
         @click="handleClickMixMenu(menu)"
       />
     </SimpleScrollbar>
+
+    <!-- 侧边栏折叠按钮 -->
     <MenuToggler
       arrow-icon
       :collapsed="siderCollapse"

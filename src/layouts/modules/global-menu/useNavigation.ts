@@ -32,7 +32,6 @@ export function useNavigation() {
 
   const navigate = (path: string) => {
     if (!path) {
-      console.warn('导航路径不能为空');
       return;
     }
 
@@ -45,7 +44,6 @@ export function useNavigation() {
     const currentRoute = findRouteRecursive(routeList, path);
 
     if (!currentRoute) {
-      console.warn(`未找到匹配的路由配置: ${path}`);
       return;
     }
 
@@ -57,18 +55,12 @@ export function useNavigation() {
 
     // 处理iframe嵌入
     if (currentRoute.meta?.iframeUrl) {
-      router.push(path).catch(err => {
-        console.error('iframe路由跳转失败:', err);
-      });
+      router.push(path);
       return;
     }
 
     // 正常路由跳转
-    router.push(path).catch(err => {
-      if (!err.message.includes('Avoided redundant navigation')) {
-        console.error('路由跳转失败:', err);
-      }
-    });
+    router.push(path);
   };
 
   return {

@@ -54,6 +54,7 @@ function useMixMenu() {
   const childLevelMenus = computed<BlogType.BlogMenuItem[]>(
     () => blogStore.menuList.find(menu => menu.path === activeFirstLevelMenuKey.value)?.children || []
   );
+  console.log('%c Line:58 🍒 childLevelMenus', 'color:#ffdd4d', childLevelMenus);
 
   /** 计算当前激活的一级菜单是否有子菜单 */
   const isActiveFirstLevelMenuHasChildren = computed(() => {

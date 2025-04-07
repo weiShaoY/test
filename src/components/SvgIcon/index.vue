@@ -33,7 +33,7 @@ const symbolId = computed(() => `#${props.prefix}-${props.icon}`);
 
 /** 计算合并后的类名 */
 const computedClass = computed(
-  () => `${props.class} anticon fill-current inline-block h-[1em] w-[1em] overflow-hidden outline-none`
+  () => `${props.class} anticon fill-current z-[1] inline-block h-[1em] w-[1em] overflow-hidden outline-none`
 );
 
 /** 计算 SVG 的行内样式 */

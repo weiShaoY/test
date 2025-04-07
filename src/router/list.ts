@@ -6,7 +6,8 @@ const routeList1: RouterType.BlogRouteRecordRaw[] = [
     path: '/blog/aaa',
     component: () => import('@/views/aaa/index.vue'),
     meta: {
-      title: 'aaa'
+      title: 'aaa',
+      icon: 'blog-menu-vue'
     }
   },
   {
@@ -14,7 +15,8 @@ const routeList1: RouterType.BlogRouteRecordRaw[] = [
     path: '/blog/bbb',
     // component: BASE_LAYOUT,
     meta: {
-      title: '测试二级路由 bbb'
+      title: '测试二级路由 bbb',
+      icon: 'blog-menu-vue'
     },
     children: [
       {
@@ -22,7 +24,8 @@ const routeList1: RouterType.BlogRouteRecordRaw[] = [
         path: '/blog/bbb/bbb1',
         component: () => import('@/views/bbb/bbb1/index.vue'),
         meta: {
-          title: 'bbb1'
+          title: '测试二级路由 bbb1',
+          icon: 'blog-menu-vue'
         }
       }
     ]
@@ -31,15 +34,17 @@ const routeList1: RouterType.BlogRouteRecordRaw[] = [
     name: 'Ccc',
     path: '/blog/ccc',
     meta: {
-      title: '测试二级路由 ccc'
+      title: '测试二级路由 ccc',
+      icon: 'blog-menu-vue'
     },
     children: [
       {
-        name: '测试二级路由 ccc1',
+        name: 'Ccc1',
         path: '/blog/ccc/ccc1',
         component: () => import('@/views/ccc/ccc1/index.vue'),
         meta: {
-          title: 'ccc1'
+          title: '测试二级路由 ccc1',
+          icon: 'blog-menu-vite'
         }
       }
     ]
@@ -49,7 +54,8 @@ const routeList1: RouterType.BlogRouteRecordRaw[] = [
     path: '/blog/ddd',
     meta: {
       title: '测试一级路由 内嵌',
-      iframeUrl: 'https://element-plus.org/zh-CN/component/menu.html'
+      iframeUrl: 'https://element-plus.org/zh-CN/component/menu.html',
+      icon: 'blog-menu-vue'
     }
   },
   {
@@ -57,7 +63,8 @@ const routeList1: RouterType.BlogRouteRecordRaw[] = [
     path: '/blog/eee',
     meta: {
       title: '测试一级路由 外链',
-      externalUrl: 'https://www.baidu.com'
+      externalUrl: 'https://www.baidu.com',
+      icon: 'blog-menu-vue'
     }
   }
 ];

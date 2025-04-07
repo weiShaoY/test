@@ -3,7 +3,7 @@ defineOptions({ name: 'SystemLogo' });
 </script>
 
 <template>
-  <icon-local-logo />
+  <SvgIcon icon="logo" :size="60" />
 </template>
 
 <style scoped></style>

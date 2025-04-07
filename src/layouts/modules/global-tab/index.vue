@@ -3,7 +3,7 @@ import { nextTick, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useElementBounding } from '@vueuse/core';
 import { PageTab } from '@sa/materials';
-import BetterScroll from '@/components/custom/better-scroll.vue';
+import BetterScroll from '@/components/blog/custom/better-scroll.vue';
 import { useAppStore } from '@/store/modules/app';
 import { useThemeStore } from '@/store/modules/theme';
 import { useRouteStore } from '@/store/modules/route';
@@ -97,7 +97,7 @@ async function handleCloseTab(tab: App.Global.Tab) {
   await tabStore.removeTab(tab.path);
 
   if (themeStore.resetCacheStrategy === 'close') {
-    routeStore.resetRouteCache(tab.routeKey);
+    routeStore.resetRouteCache(tab.path);
   }
 }
 /** 刷新页面 */
@@ -229,11 +229,7 @@ init();
           >
             <!-- Tab 前缀图标 -->
             <template #prefix>
-              <SvgIcon
-                :icon="tab.icon"
-                :local-icon="tab.localIcon"
-                class="inline-block align-text-bottom text-[16px]"
-              />
+              <SvgIcon v-if="tab.icon" :icon="tab.icon" class="inline-block align-text-bottom text-[16px]" />
             </template>
             <!-- Tab 名称 -->
             <div class="max-w-[240px] ellipsis-text">{{ tab.label }}</div>

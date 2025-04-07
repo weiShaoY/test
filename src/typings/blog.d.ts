@@ -8,6 +8,5 @@ declare namespace BlogType {
     children?: BlogMenuItem[];
   };
 
-
-  type tabRoute
+  // type tabRoute
 }

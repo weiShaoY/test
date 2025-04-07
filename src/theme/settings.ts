@@ -14,7 +14,7 @@ export const themeSettings: App.Theme.ThemeSetting = {
   isInfoFollowPrimary: true,
   resetCacheStrategy: 'close',
   layout: {
-    mode: 'vertical-mix',
+    mode: 'vertical',
     scrollMode: 'content',
     reverseHorizontalMix: false
   },

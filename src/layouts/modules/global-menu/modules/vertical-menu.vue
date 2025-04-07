@@ -5,11 +5,12 @@ import { SimpleScrollbar } from '@sa/materials';
 import { useAppStore } from '@/store/modules/app';
 import { GLOBAL_SIDER_MENU_ID } from '@/constants/app';
 import { useBlogStore } from '@/store/modules/blog';
+import { useRouterPush } from '@/hooks/common/router';
 import { useMenu } from '../../../context';
 import MenuItem from '../components/menu-item.vue';
 
-import { useNavigation } from '../useNavigation';
 defineOptions({ name: 'VerticalMenu' });
+const { routerPushByKeyWithMetaQuery } = useRouterPush();
 
 const route = useRoute();
 
@@ -38,17 +39,10 @@ watch(
   },
   { immediate: true }
 );
-
-const { navigate } = useNavigation();
-function handleSelectMenu(key: string) {
-  navigate(key);
-}
 </script>
 
 <template>
   <Teleport :to="`#${GLOBAL_SIDER_MENU_ID}`">
-    vertical
-
     <!-- 将菜单传送到全局侧边菜单 -->
     <SimpleScrollbar>
       <ElMenu
@@ -56,7 +50,7 @@ function handleSelectMenu(key: string) {
         :default-active="selectedKey"
         :default-openeds="expandedKeys"
         :collapse="appStore.siderCollapse"
-        @select="value => handleSelectMenu(value)"
+        @select="value => routerPushByKeyWithMetaQuery(value)"
       >
         <!-- 渲染菜单项 -->
         <MenuItem v-for="item in blogStore.menuList" :key="item.path" :item="item" :index="item.path" />

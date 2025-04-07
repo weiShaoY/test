@@ -345,8 +345,8 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
     /** 判断 Tab 是否固定 */
     isTabRetain,
 
-    /** 根据路由获取 Tab ID */
-    getTabIdByRoute: getTabPathByRoute,
+    /** 根据路由获取 Tab path */
+    getTabPathByRoute,
 
     /** 缓存 Tab */
     cacheTabs

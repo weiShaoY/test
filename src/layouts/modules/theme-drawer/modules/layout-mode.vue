@@ -16,6 +16,7 @@ function handleReverseHorizontalMixChange(value: boolean | string | number) {
 
 <template>
   <ElDivider>布局模式</ElDivider>
+  {{ themeStore.layout.mode }}
   <LayoutModeCard v-model:mode="themeStore.layout.mode" :disabled="appStore.isMobile">
     <template #vertical>
       <div class="layout-sider h-full w-[18px]"></div>
