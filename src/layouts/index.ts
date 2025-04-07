@@ -1,6 +1,8 @@
 /** 博客 模块默认布局组件 */
 // export const BLOG_BASE_LAYOUT = () => import('./blog/base/index.vue');
-export const BLOG_BASE_LAYOUT = () => import('./base-layout/index.vue');
+export const BLOG_BASE_LAYOUT = () => import('./blog/base-layout/index.vue');
+
+export const BLOG_BLANK_LAYOUT = () => import('./blog/blank-layout/index.vue');
 
 /** 博客 模块 Iframe 渲染组件 */
 export const BLOG_IFRAME_LAYOUT = () => import('./blog/iframe/index.vue');
