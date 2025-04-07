@@ -89,7 +89,6 @@
   },
   "devDependencies": {
     "@amap/amap-jsapi-types": "0.0.15",
-    "@elegant-router/vue": "0.3.8",
     "@iconify/json": "2.2.273",
     "@sa/scripts": "workspace:*",
     "@sa/uno-preset": "workspace:*",
