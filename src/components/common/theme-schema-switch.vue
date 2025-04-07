@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import type { Placement } from 'element-plus';
-import { $t } from '@/locales';
 
 defineOptions({ name: 'ThemeSchemaSwitch' });
 
 interface Props {
-  /** Theme schema */
+  /** 主题方案 */
   themeSchema: UnionKey.ThemeScheme;
-  /** Show tooltip */
+  /** 显示工具提示 */
   showTooltip?: boolean;
-  /** Tooltip placement */
+  /** 工具提示位置 */
   tooltipPlacement?: Placement;
 }
 
@@ -30,9 +29,9 @@ function handleSwitch() {
 }
 
 const icons: Record<UnionKey.ThemeScheme, string> = {
-  light: 'material-symbols:sunny',
-  dark: 'material-symbols:nightlight-rounded',
-  auto: 'material-symbols:hdr-auto'
+  light: 'blog-theme-light',
+  dark: 'blog-theme-dark',
+  auto: 'blog-theme-auto'
 };
 
 const icon = computed(() => icons[props.themeSchema]);
@@ -40,7 +39,7 @@ const icon = computed(() => icons[props.themeSchema]);
 const tooltipContent = computed(() => {
   if (!props.showTooltip) return '';
 
-  return $t('icon.themeSchema');
+  return '主题模式';
 });
 </script>
 

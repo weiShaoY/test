@@ -43,6 +43,14 @@ const errorRouter: RouterType.RouteRecordRaw[] = [
         }
       }
     ]
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    component: () => import('@/pages/error/404/index.vue'),
+    meta: {
+      title: 'not-found'
+    }
   }
 ];
 

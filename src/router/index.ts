@@ -30,16 +30,6 @@ export const ROOT_ROUTE = {
   }
 };
 
-const NOT_FOUND_ROUTE = {
-  name: 'not-found',
-  path: '/:pathMatch(.*)*',
-  component: 'layout.blank$view.404',
-  meta: {
-    title: 'not-found',
-    constant: true
-  }
-};
-
 export const router = createRouter({
   history: historyCreatorMap[VITE_ROUTER_HISTORY_MODE](VITE_BASE_URL),
   routes: [
@@ -47,10 +37,10 @@ export const router = createRouter({
     {
       path: '/blog',
       component: BLOG_BASE_LAYOUT,
-      children: routeList as any
+      children: routeList as any,
+      redirect: '/blog/aaa'
     },
-    ...errorRouter,
-    NOT_FOUND_ROUTE
+    ...(errorRouter as any)
   ]
 });
 

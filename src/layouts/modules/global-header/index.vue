@@ -7,18 +7,19 @@ import GlobalLogo from '../global-logo/index.vue';
 import GlobalBreadcrumb from '../global-breadcrumb/index.vue';
 import GlobalSearch from '../global-search/index.vue';
 import ThemeButton from './components/theme-button.vue';
-import UserAvatar from './components/user-avatar.vue';
 
 defineOptions({ name: 'GlobalHeader' });
 
-interface Props {
-  /** Whether to show the logo */
+type Props = {
+  /** 是否显示 Logo */
   showLogo?: App.Global.HeaderProps['showLogo'];
-  /** Whether to show the menu toggler */
+
+  /** 是否显示菜单切换按钮 */
   showMenuToggler?: App.Global.HeaderProps['showMenuToggler'];
-  /** Whether to show the menu */
+
+  /** 是否显示菜单 */
   showMenu?: App.Global.HeaderProps['showMenu'];
-}
+};
 
 defineProps<Props>();
 
@@ -29,27 +30,36 @@ const { isFullscreen, toggle } = useFullscreen();
 
 <template>
   <DarkModeContainer class="h-full flex-y-center px-[12px] shadow-header">
+    <!-- 全局Logo -->
     <GlobalLogo v-if="showLogo" class="h-full" :style="{ width: themeStore.sider.width + 'px' }" />
+    <!-- 菜单切换按钮 -->
     <MenuToggler v-if="showMenuToggler" :collapsed="appStore.siderCollapse" @click="appStore.toggleSiderCollapse" />
+
+    <!-- 菜单 -->
     <div v-if="showMenu" :id="GLOBAL_HEADER_MENU_ID" class="h-full flex-y-center flex-1-hidden"></div>
+
+    <!-- 面包屑导航 -->
     <div v-else class="h-full flex-y-center flex-1-hidden">
       <GlobalBreadcrumb v-if="!appStore.isMobile" class="ml-[12px]" />
     </div>
+
+    <!-- 右侧操作区 -->
     <div class="h-full flex-y-center justify-end">
       <GlobalSearch />
+      <!-- 全屏按钮 -->
       <div>
         <FullScreen v-if="!appStore.isMobile" :full="isFullscreen" @click="toggle" />
       </div>
-
+      <!-- 主题色切换按钮 -->
       <ThemeSchemaSwitch
         :theme-schema="themeStore.themeScheme"
         :is-dark="themeStore.darkMode"
         @switch="themeStore.toggleThemeScheme"
       />
       <div>
+        <!-- 主题按钮 -->
         <ThemeButton />
       </div>
-      <UserAvatar />
     </div>
   </DarkModeContainer>
 </template>
