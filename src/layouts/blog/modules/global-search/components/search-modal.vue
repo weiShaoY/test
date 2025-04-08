@@ -6,8 +6,10 @@ import { onKeyStroke, useDebounceFn } from '@vueuse/core';
 import { computed, ref, shallowRef } from 'vue';
 
 import { useRouter } from 'vue-router';
-import { useRouteStore } from '@/store/modules/route';
+
 import { useAppStore } from '@/store/modules/app';
+
+import { useBlogStore } from '@/store/modules/blog';
 
 import SearchFooter from './search-footer.vue';
 
@@ -21,7 +23,7 @@ const router = useRouter();
 
 const appStore = useAppStore();
 
-const routeStore = useRouteStore();
+const blogStore = useBlogStore();
 
 const isMobile = computed(() => appStore.isMobile);
 
@@ -29,7 +31,7 @@ const keyword = ref('');
 
 const activePath = ref('');
 
-const resultOptions = shallowRef<App.Global.Menu[]>([]);
+const resultOptions = shallowRef<BlogType.BlogMenuItem[]>([]);
 
 const handleSearch = useDebounceFn(search, 300);
 
@@ -40,15 +42,14 @@ const visible = defineModel<boolean>('show', {
 const searchInput = ref<InputInstance>();
 
 function search() {
-  resultOptions.value = routeStore.searchMenus.filter(menu => {
+  resultOptions.value = blogStore.searchMenuList.filter(menu => {
     const trimKeyword = keyword.value.toLocaleLowerCase().trim();
 
-    const title = menu.label.toLocaleLowerCase();
+    const title = menu.meta.title.toLocaleLowerCase();
 
     return trimKeyword && title.includes(trimKeyword);
   });
-
-  activePath.value = resultOptions.value[0]?.routePath ?? '';
+  activePath.value = resultOptions.value[0]?.path ?? '';
 }
 
 function handleClose() {
@@ -76,7 +77,7 @@ function handleUp() {
 
   const activeIndex = index === 0 ? length - 1 : index - 1;
 
-  activePath.value = resultOptions.value[activeIndex].routePath;
+  activePath.value = resultOptions.value[activeIndex].path;
 }
 
 /** key down */
@@ -95,11 +96,11 @@ function handleDown() {
 
   const activeIndex = index === length - 1 ? 0 : index + 1;
 
-  activePath.value = resultOptions.value[activeIndex].routePath;
+  activePath.value = resultOptions.value[activeIndex].path;
 }
 
 function getActivePathIndex() {
-  return resultOptions.value.findIndex(item => item.routePath === activePath.value);
+  return resultOptions.value.findIndex(item => item.path === activePath.value);
 }
 
 /** key enter */

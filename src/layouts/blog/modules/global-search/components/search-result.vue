@@ -3,9 +3,9 @@ import { useThemeStore } from '@/store/modules/theme';
 
 defineOptions({ name: 'SearchResult' });
 
-interface Props {
-  options: App.Global.Menu[];
-}
+type Props = {
+  options: BlogType.BlogMenuItem[];
+};
 
 defineProps<Props>();
 
@@ -19,8 +19,8 @@ const theme = useThemeStore();
 
 const active = defineModel<string>('path', { required: true });
 
-async function handleMouseEnter(item: App.Global.Menu) {
-  active.value = item.routePath;
+async function handleMouseEnter(item: BlogType.BlogMenuItem) {
+  active.value = item.path;
 }
 
 function handleTo() {
@@ -31,19 +31,20 @@ function handleTo() {
 <template>
   <ElScrollbar>
     <div class="pb-[12px]">
-      <template v-for="item in options" :key="item.routePath">
+      <template v-for="item in options" :key="item.path">
         <div
           class="mt-[8px] h-[56px] flex-y-center cursor-pointer justify-between rounded-[4px] bg-[#e5e7eb] px-[14px] dark:bg-dark"
           :style="{
-            background: item.routePath === active ? theme.themeColor : '',
-            color: item.routePath === active ? '#fff' : ''
+            background: item.path === active ? theme.themeColor : '',
+            color: item.path === active ? '#fff' : ''
           }"
           @click="handleTo"
           @mouseenter="handleMouseEnter(item)"
         >
-          <component :is="item.icon" />
+          <SvgIcon v-if="item.meta.icon" :icon="item.meta.icon" class="icon mr-[3px] p-[2px] text-[20px]" />
+
           <span class="ml-[5px] flex-1">
-            {{ item.label }}
+            {{ item.meta.title }}
           </span>
           <icon-ant-design-enter-outlined class="icon mr-[3px] p-[2px] text-[20px]" />
         </div>

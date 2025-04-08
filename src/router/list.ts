@@ -27,6 +27,15 @@ const routeList1: RouterType.BlogRouteRecordRaw[] = [
           title: '测试二级路由 bbb1',
           icon: 'blog-menu-vue'
         }
+      },
+      {
+        name: 'Bbb2',
+        path: '/blog/bbb/bbb2',
+        component: () => import('@/views/bbb/bbb2/index.vue'),
+        meta: {
+          title: '测试二级路由 bbb2',
+          icon: 'blog-menu-vue'
+        }
       }
     ]
   },

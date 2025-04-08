@@ -5,17 +5,14 @@ import { useBoolean } from '@sa/hooks';
 import type { CustomRoute, ElegantConstRoute, LastLevelRouteKey, RouteKey, RouteMap } from '@elegant-router/types';
 import { SetupStoreId } from '@/enum';
 import { router } from '@/router';
-import { createStaticRoutes, getAuthVueRoutes } from '@/router/routes';
-import { ROOT_ROUTE } from '@/router/routes/builtin';
-import { getRouteName, getRoutePath } from '@/router/elegant/transform';
-import { fetchGetConstantRoutes, fetchGetUserRoutes, fetchIsRouteExist } from '@/service/api';
+
+import { fetchGetConstantRoutes, fetchGetUserRoutes } from '@/service/api';
 import { useTabStore } from '../tab';
 import {
   getBreadcrumbsByRoute,
   getCacheRouteNames,
   getGlobalMenusByAuthRoutes,
-  getSelectedMenuKeyPathByKey,
-  isRouteExistByRouteName,
+  // getSelectedMenuKeyPathByKey,
   sortRoutesByOrder,
   transformMenuToSearchMenus
 } from './shared';
@@ -85,7 +82,7 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
 
   /** Update global menus by locale */
   function updateGlobalMenusByLocale() {
-    menus.value = updateLocaleOfGlobalMenus(menus.value);
+    // menus.value = updateLocaleOfGlobalMenus(menus.value);
   }
 
   /** Cache routes */
@@ -243,104 +240,14 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
     getCacheRoutes(vueRoutes);
   }
 
-  /**
-   * Add routes to vue router
-   *
-   * @param routes Vue routes
-   */
-  function addRoutesToVueRouter(routes: RouteRecordRaw[]) {
-    routes.forEach(route => {
-      const removeFn = router.addRoute(route);
-      addRemoveRouteFn(removeFn);
-    });
-  }
-
-  /**
-   * Add remove route fn
-   *
-   * @param fn
-   */
-  function addRemoveRouteFn(fn: () => void) {
-    removeRouteFns.push(fn);
-  }
-
-  /**
-   * Update root route redirect when auth route mode is dynamic
-   *
-   * @param redirectKey Redirect route key
-   */
-  function handleUpdateRootRouteRedirect(redirectKey: LastLevelRouteKey) {
-    const redirect = getRoutePath(redirectKey);
-
-    if (redirect) {
-      const rootRoute: CustomRoute = { ...ROOT_ROUTE, redirect };
-
-      router.removeRoute(rootRoute.name);
-
-      const [rootVueRoute] = getAuthVueRoutes([rootRoute]);
-
-      router.addRoute(rootVueRoute);
-    }
-  }
-
-  /**
-   * Get is auth route exist
-   *
-   * @param routePath Route path
-   */
-  async function getIsAuthRouteExist(routePath: RouteMap[RouteKey]) {
-    const routeName = getRouteName(routePath);
-
-    if (!routeName) {
-      return false;
-    }
-
-    if (authRouteMode.value === 'static') {
-      const { authRoutes: staticAuthRoutes } = createStaticRoutes();
-      return isRouteExistByRouteName(routeName, staticAuthRoutes);
-    }
-
-    const { data } = await fetchIsRouteExist(routeName);
-
-    return data;
-  }
-
-  /**
-   * 获取选中的菜单键路径
-   *
-   * @param selectedKey 选中的菜单键
-   * @returns 选中的菜单键路径数组
-   */
-  function getSelectedMenuKeyPath(selectedKey: string) {
-    return getSelectedMenuKeyPathByKey(selectedKey, menus.value);
-  }
-
-  async function onRouteSwitchWhenLoggedIn() {
-    await authStore.initUserInfo();
-  }
-
-  async function onRouteSwitchWhenNotLoggedIn() {
-    // some global init logic if it does not need to be logged in
-  }
-
   return {
-    resetStore,
-    routeHome,
-    menus,
-    searchMenus,
-    updateGlobalMenusByLocale,
-    cacheRoutes,
-    excludeCacheRoutes,
-    resetRouteCache,
-    breadcrumbs,
-    initConstantRoute,
-    isInitConstantRoute,
-    initAuthRoute,
-    isInitAuthRoute,
-    setIsInitAuthRoute,
-    getIsAuthRouteExist,
-    getSelectedMenuKeyPath,
-    onRouteSwitchWhenLoggedIn,
-    onRouteSwitchWhenNotLoggedIn
+    // resetStore,
+    // routeHome,
+    // menus,
+    // searchMenus,
+    // cacheRoutes,
+    // excludeCacheRoutes,
+    // resetRouteCache,
+    // breadcrumbs
   };
 });

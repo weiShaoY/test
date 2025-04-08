@@ -8,5 +8,9 @@ declare namespace BlogType {
     children?: BlogMenuItem[];
   };
 
-  // type tabRoute
+  /** 面包屑 */
+  type Breadcrumb = Omit<BlogMenuItem, 'children'> & {
+    /** 面包屑选项 */
+    options?: Breadcrumb[];
+  };
 }

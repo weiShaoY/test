@@ -2,7 +2,7 @@ import type { RouteKey } from '@elegant-router/types';
 
 import type { Router } from 'vue-router';
 
-import { getRoutePath } from '@/router/elegant/transform';
+// import { getRoutePath } from '@/router/elegant/transform';
 
 /**
  * 获取所有标签页
@@ -204,11 +204,8 @@ function updateTabsLabel(tabs: App.Global.Tab[]) {
  * @returns 找到的标签页
  */
 export function findTabByRouteName(name: RouteKey, tabs: App.Global.Tab[]) {
-  const routePath = getRoutePath(name);
-
-  const tabId = routePath;
-
-  const multiTabId = `${routePath}?`;
-
-  return tabs.find(tab => tab.path === tabId || tab.path.startsWith(multiTabId));
+  // const routePath = getRoutePath(name);
+  // const tabId = routePath;
+  // const multiTabId = `${routePath}?`;
+  // return tabs.find(tab => tab.path === tabId || tab.path.startsWith(multiTabId));
 }

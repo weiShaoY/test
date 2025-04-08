@@ -137,15 +137,15 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
    *
    * @param routeName 路由名称
    */
-  async function removeTabByRouteName(routeName: RouteKey) {
-    const tab = findTabByRouteName(routeName, tabs.value);
+  // async function removeTabByRouteName(routeName: RouteKey) {
+  //   const tab = findTabByRouteName(routeName, tabs.value);
 
-    if (!tab) {
-      return;
-    }
+  //   if (!tab) {
+  //     return;
+  //   }
 
-    await removeTab(tab.path);
-  }
+  //   await removeTab(tab.path);
+  // }
 
   /**
    * 清除所有 Tab（排除指定的 Tab）
@@ -322,7 +322,7 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
     removeActiveTab,
 
     /** 根据路由名称移除 Tab */
-    removeTabByRouteName,
+    // removeTabByRouteName,
 
     /** 清除所有 Tab */
     clearTabs,

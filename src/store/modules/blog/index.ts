@@ -3,11 +3,18 @@
 
 import { defineStore } from 'pinia';
 
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { routeList } from '@/router/list';
 
-import { getMenuList, getSelectedMenuKeyPathByKey } from './utils';
+import { router } from '@/router';
+
+import {
+  getBreadcrumbsByRoute,
+  getMenuList,
+  getSelectedMenuKeyPathByKey,
+  transformMenuToSearchMenuList
+} from './utils';
 
 /** 博客模块 */
 export const useBlogStore = defineStore('blog', () => {
@@ -27,9 +34,17 @@ export const useBlogStore = defineStore('blog', () => {
     }
   });
 
+  const searchMenuList = computed(() => transformMenuToSearchMenuList(menuList.value));
+
+  const breadcrumbList = computed(() =>
+    getBreadcrumbsByRoute(router.currentRoute.value as RouterType.BlogRouteRecordRaw, menuList.value)
+  );
+  console.log('%c Line:113 🍊 breadcrumbList', 'color:#33a5ff', breadcrumbList.value);
   return {
     /** 菜单列表 */
     menuList,
-    menuFunc
+    menuFunc,
+    searchMenuList,
+    breadcrumbList
   };
 });
