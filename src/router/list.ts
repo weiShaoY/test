@@ -7,7 +7,8 @@ const routeList1: RouterType.BlogRouteRecordRaw[] = [
     component: () => import('@/views/aaa/index.vue'),
     meta: {
       title: 'aaa',
-      icon: 'blog-menu-vue'
+      icon: 'blog-menu-vue',
+      textBadge: 'new'
     }
   },
   {
@@ -53,7 +54,8 @@ const routeList1: RouterType.BlogRouteRecordRaw[] = [
         component: () => import('@/views/ccc/ccc1/index.vue'),
         meta: {
           title: '测试二级路由 ccc1',
-          icon: 'blog-menu-vite'
+          icon: 'blog-menu-vite',
+          iconBadge: 'blog-menu-vue'
         }
       }
     ]
@@ -64,7 +66,8 @@ const routeList1: RouterType.BlogRouteRecordRaw[] = [
     meta: {
       title: '测试一级路由 内嵌',
       iframeUrl: 'https://element-plus.org/zh-CN/component/menu.html',
-      icon: 'blog-menu-vue'
+      icon: 'blog-menu-vue',
+      iconBadge: 'blog-menu-vue'
     }
   },
   {

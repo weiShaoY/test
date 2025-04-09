@@ -93,6 +93,8 @@ html.dark:root {
   }
   li.el-menu-item {
     margin-top: 6px;
+    // 定位
+    position: relative;
     &.is-active,
     &.is-active:hover {
       &::before {
