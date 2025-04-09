@@ -35,7 +35,8 @@ const routeList1: RouterType.BlogRouteRecordRaw[] = [
         component: () => import('@/views/bbb/bbb2/index.vue'),
         meta: {
           title: '测试二级路由 bbb2',
-          icon: 'blog-menu-vue'
+          icon: 'blog-menu-vue',
+          iconBadge: 'blog-menu-react'
         }
       }
     ]

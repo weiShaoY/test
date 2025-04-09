@@ -1,5 +1,3 @@
-import type { RouteKey } from '@elegant-router/types';
-
 import { useEventListener } from '@vueuse/core';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
@@ -17,7 +15,6 @@ import {
   extractTabsByAllRoutes,
   filterTabsByIds,
   filterTabsByPath,
-  findTabByRouteName,
   getAllTabs,
   getFixedTabPaths,
   getTabByRoute,

@@ -229,21 +229,27 @@ init();
           >
             <!-- Tab 前缀图标 -->
             <template #prefix>
-              <SvgIcon v-if="tab.icon" :icon="tab.icon" class="inline-block align-text-bottom text-[16px]" />
+              <SvgIcon v-if="tab.icon" :icon="tab.icon" :size="16" class="inline-block align-text-bottom text-[16px]" />
             </template>
+
             <!-- Tab 名称 -->
-            <div class="max-w-[240px] ellipsis-text">{{ tab.label }}</div>
+            <div class="">
+              <div class="max-w-[240px] ellipsis-text">{{ tab.label }}</div>
+            </div>
           </PageTab>
         </div>
       </BetterScroll>
     </div>
+
     <!-- 刷新按钮 -->
     <div>
       <ReloadButton :loading="!appStore.reloadFlag" @click="refresh" />
     </div>
+
     <!-- 全屏切换按钮 -->
     <FullScreen :full="appStore.fullContent" @click="appStore.toggleFullContent" />
   </DarkModeContainer>
+
   <!-- 右键菜单 -->
   <ContextMenu
     :visible="dropdown.visible"

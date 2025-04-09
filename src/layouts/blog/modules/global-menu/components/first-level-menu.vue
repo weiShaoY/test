@@ -103,7 +103,6 @@ function toggleSiderCollapse() {
   <!-- 定义结束 -->
 
   <!-- 主布局 -->
-
   <div class="h-full flex-col-stretch flex-1-hidden">
     <slot></slot>
     <SimpleScrollbar>
