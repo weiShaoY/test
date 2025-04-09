@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import type { WatermarkProps } from 'element-plus';
-import zhCn from 'element-plus/es/locale/lang/zh-cn';
-import { useThemeStore } from './store/modules/theme';
+import type { WatermarkProps } from 'element-plus'
 
-defineOptions({ name: 'App' });
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
 
-const themeStore = useThemeStore();
+import { computed } from 'vue'
+
+import { useThemeStore } from './store/modules/theme'
+
+defineOptions({
+  name: 'App',
+})
+
+const themeStore = useThemeStore()
 
 const watermarkProps = computed<WatermarkProps>(() => {
   return {
@@ -16,16 +21,23 @@ const watermarkProps = computed<WatermarkProps>(() => {
     lineHeight: 16,
     gap: [100, 120],
     rotate: -15,
-    zIndex: 9999
-  };
-});
+    zIndex: 9999,
+  }
+})
 </script>
 
 <template>
-  <ElConfigProvider :locale="zhCn">
+  <ElConfigProvider
+    :locale="zhCn"
+  >
     <AppProvider>
-      <ElWatermark class="h-full" v-bind="watermarkProps">
-        <RouterView class="bg-layout" />
+      <ElWatermark
+        class="h-full"
+        v-bind="watermarkProps"
+      >
+        <RouterView
+          class="bg-layout"
+        />
       </ElWatermark>
     </AppProvider>
   </ElConfigProvider>

@@ -1,7 +1,7 @@
-export * from './common';
+export * from './common'
 
-export * from './icon';
+export * from './icon'
 
-export * from './service';
+export * from './service'
 
-export * from './storage';
+export * from './storage'

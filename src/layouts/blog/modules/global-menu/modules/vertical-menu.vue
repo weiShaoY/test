@@ -1,48 +1,63 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
-import { SimpleScrollbar } from '@sa/materials';
-import { useAppStore } from '@/store/modules/app';
-import { GLOBAL_SIDER_MENU_ID } from '@/constants/app';
-import { useBlogStore } from '@/store/modules/blog';
-import { useRouterPush } from '@/hooks/common/router';
-import { useMenu } from '../../../context';
-import MenuItem from '../components/menu-item.vue';
+import { GLOBAL_SIDER_MENU_ID } from '@/constants/app'
 
-defineOptions({ name: 'VerticalMenu' });
-const { routerPushByKeyWithMetaQuery } = useRouterPush();
+import { useRouterPush } from '@/hooks/common/router'
 
-const route = useRoute();
+import { useAppStore } from '@/store/modules/app'
 
-const appStore = useAppStore();
+import { useBlogStore } from '@/store/modules/blog'
 
-const blogStore = useBlogStore();
+import { SimpleScrollbar } from '@sa/materials'
 
-const { selectedKey } = useMenu();
+import { ref, watch } from 'vue'
 
-const expandedKeys = ref<string[]>([]);
+import { useRoute } from 'vue-router'
+
+import { useMenu } from '../../../context'
+
+import MenuItem from '../components/menu-item.vue'
+
+defineOptions({
+  name: 'VerticalMenu',
+})
+const { routerPushByKeyWithMetaQuery } = useRouterPush()
+
+const route = useRoute()
+
+const appStore = useAppStore()
+
+const blogStore = useBlogStore()
+
+const { selectedKey } = useMenu()
+
+const expandedKeys = ref<string[]>([])
 
 /** 更新展开的菜单项 */
 function updateExpandedKeys() {
   // 如果侧边栏折叠,或者没有选中的菜单项,则清空展开的菜单项
   if (appStore.siderCollapse || !selectedKey.value) {
-    expandedKeys.value = [];
+    expandedKeys.value = []
   }
+
   // 如果每次 要展开的菜单项
-  expandedKeys.value = blogStore.menuFunc.getSelectedMenuKeyPath(selectedKey.value);
+  expandedKeys.value = blogStore.menuFunc.getSelectedMenuKeyPath(selectedKey.value)
 }
 
 watch(
   () => route.name,
   () => {
-    updateExpandedKeys();
+    updateExpandedKeys()
   },
-  { immediate: true }
-);
+  {
+    immediate: true,
+  },
+)
 </script>
 
 <template>
-  <Teleport :to="`#${GLOBAL_SIDER_MENU_ID}`">
+  <Teleport
+    :to="`#${GLOBAL_SIDER_MENU_ID}`"
+  >
     <!-- 将菜单传送到全局侧边菜单 -->
     <SimpleScrollbar>
       <ElMenu
@@ -53,7 +68,12 @@ watch(
         @select="value => routerPushByKeyWithMetaQuery(value)"
       >
         <!-- 渲染菜单项 -->
-        <MenuItem v-for="item in blogStore.menuList" :key="item.path" :item="item" :index="item.path" />
+        <MenuItem
+          v-for="item in blogStore.menuList"
+          :key="item.path"
+          :item="item"
+          :index="item.path"
+        />
       </ElMenu>
     </SimpleScrollbar>
   </Teleport>

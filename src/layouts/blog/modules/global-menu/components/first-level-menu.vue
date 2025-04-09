@@ -1,37 +1,43 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { createReusableTemplate } from '@vueuse/core';
-import { SimpleScrollbar } from '@sa/materials';
-import { transformColorWithOpacity } from '@sa/color';
+import { transformColorWithOpacity } from '@sa/color'
 
-defineOptions({ name: 'FirstLevelMenu' });
+import { SimpleScrollbar } from '@sa/materials'
 
-interface Props {
-  menuList: BlogType.BlogMenuItem[];
-  activeMenuKey?: string;
-  inverted?: boolean;
-  siderCollapse?: boolean;
-  darkMode?: boolean;
-  themeColor: string;
+import { createReusableTemplate } from '@vueuse/core'
+
+import { computed } from 'vue'
+
+defineOptions({
+  name: 'FirstLevelMenu',
+})
+
+const props = defineProps<Props>()
+
+const emit = defineEmits<Emits>()
+
+type Props = {
+  menuList: BlogType.BlogMenuItem[]
+  activeMenuKey?: string
+  inverted?: boolean
+  siderCollapse?: boolean
+  darkMode?: boolean
+  themeColor: string
 }
 
-const props = defineProps<Props>();
-
-interface Emits {
-  (e: 'select', menu: BlogType.BlogMenuItem): boolean;
-  (e: 'toggleSiderCollapse'): void;
+type Emits = {
+  (e: 'select', menu: BlogType.BlogMenuItem): boolean
+  (e: 'toggleSiderCollapse'): void
 }
 
-const emit = defineEmits<Emits>();
+type MixMenuItemProps = {
 
-interface MixMenuItemProps {
   /**
    * 菜单项的标签（名称）
    *
    * @example
    *   仪表盘;
    */
-  title: BlogType.BlogMenuItem['meta']['title'];
+  title: BlogType.BlogMenuItem['meta']['title']
 
   /**
    * 菜单项的图标
@@ -39,7 +45,7 @@ interface MixMenuItemProps {
    * @example
    *   <SvgIcon icon="home" />;
    */
-  icon?: BlogType.BlogMenuItem['meta']['icon'];
+  icon?: BlogType.BlogMenuItem['meta']['icon']
 
   /**
    * 是否为当前激活的菜单项
@@ -47,49 +53,56 @@ interface MixMenuItemProps {
    * @example
    *   true;
    */
-  active: boolean;
+  active: boolean
 
   /**
    * 是否为迷你模式（小尺寸显示）
    *
    * @default false
    */
-  isMini?: boolean;
+  isMini?: boolean
 }
 
-const [DefineMixMenuItem, MixMenuItem] = createReusableTemplate<MixMenuItemProps>();
+const [DefineMixMenuItem, MixMenuItem] = createReusableTemplate<MixMenuItemProps>()
 
 const selectedBgColor = computed(() => {
-  const { darkMode, themeColor } = props;
+  const { darkMode, themeColor } = props
 
-  const light = transformColorWithOpacity(themeColor, 0.1, '#ffffff');
-  const dark = transformColorWithOpacity(themeColor, 0.3, '#000000');
+  const light = transformColorWithOpacity(themeColor, 0.1, '#ffffff')
 
-  return darkMode ? dark : light;
-});
+  const dark = transformColorWithOpacity(themeColor, 0.3, '#000000')
+
+  return darkMode ? dark : light
+})
 
 function handleClickMixMenu(menu: BlogType.BlogMenuItem) {
-  emit('select', menu);
+  emit('select', menu)
 }
 
 function toggleSiderCollapse() {
-  emit('toggleSiderCollapse');
+  emit('toggleSiderCollapse')
 }
 </script>
 
 <template>
   <!-- 定义可复用的 MixMenuItem 组件 -->
-  <DefineMixMenuItem v-slot="{ title, icon, active, isMini }">
+  <DefineMixMenuItem
+    v-slot="{ title, icon, active, isMini }"
+  >
     <div
       class="mx-[4px] mb-[6px] flex-col-center cursor-pointer rounded-[8px] bg-transparent px-[4px] py-[8px] transition-300 hover:bg-[rgb(0,0,0,0.08)]"
       :class="{
         'text-primary selected-mix-menu': active,
         'text-white:65 hover:text-white': inverted,
-        '!text-white !bg-primary': active && inverted
+        '!text-white !bg-primary': active && inverted,
       }"
     >
       <!-- 动态加载图标 -->
-      <SvgIcon v-if="icon" :icon="icon" :class="isMini ? 'text-icon-small' : 'text-icon-large'" />
+      <SvgIcon
+        v-if="icon"
+        :icon="icon"
+        :class="isMini ? 'text-icon-small' : 'text-icon-large'"
+      />
 
       <!-- 菜单项标签 -->
       <p
@@ -103,8 +116,11 @@ function toggleSiderCollapse() {
   <!-- 定义结束 -->
 
   <!-- 主布局 -->
-  <div class="h-full flex-col-stretch flex-1-hidden">
-    <slot></slot>
+  <div
+    class="h-full flex-col-stretch flex-1-hidden"
+  >
+    <slot />
+
     <SimpleScrollbar>
       <!-- 遍历菜单列表，渲染 MixMenuItem -->
       <MixMenuItem

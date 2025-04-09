@@ -1,40 +1,42 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import type { CSSProperties } from 'vue';
+import type { CSSProperties } from 'vue'
+
+import { computed } from 'vue'
 
 type SvgIconPropsType = {
+
   /** 图标的名称 */
-  icon: string;
+  icon: string
 
   /** 图标的前缀 */
-  prefix?: string;
+  prefix?: string
 
   /** 图标的颜色 */
-  color?: string;
+  color?: string
 
   /** 图标的大小 */
-  size?: string | number;
+  size?: string | number
 
   /** 额外的 CSS 类名 */
-  class?: string;
+  class?: string
 
   /** 行内样式 */
-  style?: CSSProperties;
-};
+  style?: CSSProperties
+}
 
 const props = withDefaults(defineProps<SvgIconPropsType>(), {
   prefix: 'icon',
   size: 24,
-  color: 'currentColor'
-});
+  color: 'currentColor',
+})
 
 /** 计算 `symbolId` 用于引用图标 */
-const symbolId = computed(() => `#${props.prefix}-${props.icon}`);
+const symbolId = computed(() => `#${props.prefix}-${props.icon}`)
 
 /** 计算合并后的类名 */
 const computedClass = computed(
-  () => `${props.class} anticon fill-current z-[1] inline-block h-[1em] w-[1em] overflow-hidden outline-none`
-);
+  () => `${props.class} anticon fill-current z-[1] inline-block h-[1em] w-[1em] overflow-hidden outline-none`,
+)
 
 /** 计算 SVG 的行内样式 */
 const computedStyle = computed(() => ({
@@ -42,8 +44,8 @@ const computedStyle = computed(() => ({
   width: props.size,
   height: props.size,
   color: props.color,
-  ...props.style
-}));
+  ...props.style,
+}))
 </script>
 
 <template>
@@ -56,6 +58,9 @@ const computedStyle = computed(() => ({
   >
     <title>{{ icon }}</title>
 
-    <use :xlink:href="symbolId" fill="currentColor" />
+    <use
+      :xlink:href="symbolId"
+      fill="currentColor"
+    />
   </svg>
 </template>

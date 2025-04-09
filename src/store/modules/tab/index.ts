@@ -1,15 +1,18 @@
-import { useEventListener } from '@vueuse/core';
-import { defineStore } from 'pinia';
-import { computed, ref } from 'vue';
-import { SetupStoreId } from '@/enum';
+import { SetupStoreId } from '@/enum'
 
-import { useRouterPush } from '@/hooks/common/router';
+import { useRouterPush } from '@/hooks/common/router'
 
-import { router } from '@/router';
+import { router } from '@/router'
 
-import { localStg } from '@/utils/storage';
+import { localStg } from '@/utils/storage'
 
-import { useThemeStore } from '../theme';
+import { useEventListener } from '@vueuse/core'
+
+import { defineStore } from 'pinia'
+
+import { computed, ref } from 'vue'
+
+import { useThemeStore } from '../theme'
 
 import {
   extractTabsByAllRoutes,
@@ -19,26 +22,26 @@ import {
   getFixedTabPaths,
   getTabByRoute,
   getTabPathByRoute,
-  isTabInTabs
-} from './shared';
+  isTabInTabs,
+} from './shared'
 
 /** Tab 状态管理 */
 export const useTabStore = defineStore(SetupStoreId.Tab, () => {
   /** 主题状态管理 */
-  const themeStore = useThemeStore();
+  const themeStore = useThemeStore()
 
   /** 路由跳转工具 */
-  const { routerPush } = useRouterPush(false);
+  const { routerPush } = useRouterPush(false)
 
   /** Tab 列表 */
-  const tabs = ref<App.Global.Tab[]>([]);
+  const tabs = ref<App.Global.Tab[]>([])
 
   /** 首页 Tab */
   const homeTab = ref<App.Global.Tab>({
     path: '/blog/aaa',
     label: 'aaa',
-    fullPath: '/blog/aaa'
-  });
+    fullPath: '/blog/aaa',
+  })
 
   /** 初始化首页 Tab */
   function initHomeTab() {
@@ -46,10 +49,10 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
   }
 
   /** 所有 Tab（包括首页 Tab） */
-  const allTabs = computed(() => getAllTabs(tabs.value, homeTab.value));
+  const allTabs = computed(() => getAllTabs(tabs.value, homeTab.value))
 
   /** 当前激活的 Tab Path */
-  const activeTabPath = ref<string>('');
+  const activeTabPath = ref<string>('')
 
   /**
    * 设置当前激活的 Tab 路径
@@ -57,7 +60,7 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
    * @param path Tab 路径
    */
   function setActiveTabPath(path: string) {
-    activeTabPath.value = path;
+    activeTabPath.value = path
   }
 
   /**
@@ -66,15 +69,15 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
    * @param currentRoute 当前路由
    */
   function initTabStore(currentRoute: RouterType.BlogRouteRecordRaw) {
-    const storageTabs = localStg.get('globalTabs');
+    const storageTabs = localStg.get('globalTabs')
 
     if (themeStore.tab.cache && storageTabs) {
-      const extractedTabs = extractTabsByAllRoutes(router, storageTabs);
+      const extractedTabs = extractTabsByAllRoutes(router, storageTabs)
 
-      tabs.value = extractedTabs;
+      tabs.value = extractedTabs
     }
 
-    addTab(currentRoute);
+    addTab(currentRoute)
   }
 
   /**
@@ -84,16 +87,16 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
    * @param active 是否激活该 Tab
    */
   function addTab(route: RouterType.BlogRouteRecordRaw, active = true) {
-    const tab = getTabByRoute(route);
+    const tab = getTabByRoute(route)
 
-    const isHomeTab = tab.path === homeTab.value?.path;
+    const isHomeTab = tab.path === homeTab.value?.path
 
     if (!isHomeTab && !isTabInTabs(tab.path, tabs.value)) {
-      tabs.value.push(tab);
+      tabs.value.push(tab)
     }
 
     if (active) {
-      setActiveTabPath(tab.path);
+      setActiveTabPath(tab.path)
     }
   }
 
@@ -103,30 +106,30 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
    * @param tabPath Tab 路径
    */
   async function removeTab(tabPath: string) {
-    const isRemoveActiveTab = activeTabPath.value === tabPath;
+    const isRemoveActiveTab = activeTabPath.value === tabPath
 
-    const updatedTabs = filterTabsByPath(tabPath, tabs.value);
+    const updatedTabs = filterTabsByPath(tabPath, tabs.value)
 
     function update() {
-      tabs.value = updatedTabs;
+      tabs.value = updatedTabs
     }
 
     if (!isRemoveActiveTab) {
-      update();
-      return;
+      update()
+      return
     }
 
-    const activeTab = updatedTabs.at(-1) || homeTab.value;
+    const activeTab = updatedTabs.at(-1) || homeTab.value
 
     if (activeTab) {
-      await switchRouteByTab(activeTab);
-      update();
+      await switchRouteByTab(activeTab)
+      update()
     }
   }
 
   /** 移除当前激活的 Tab */
   async function removeActiveTab() {
-    await removeTab(activeTabPath.value);
+    await removeTab(activeTabPath.value)
   }
 
   /**
@@ -150,27 +153,27 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
    * @param excludes 需要排除的 Tab ID 列表
    */
   async function clearTabs(excludes: string[] = []) {
-    const remainTabPaths = [...getFixedTabPaths(tabs.value), ...excludes];
+    const remainTabPaths = [...getFixedTabPaths(tabs.value), ...excludes]
 
-    const removedTabsPaths = tabs.value.map(tab => tab.path).filter(path => !remainTabPaths.includes(path));
+    const removedTabsPaths = tabs.value.map(tab => tab.path).filter(path => !remainTabPaths.includes(path))
 
-    const isRemoveActiveTab = removedTabsPaths.includes(activeTabPath.value);
+    const isRemoveActiveTab = removedTabsPaths.includes(activeTabPath.value)
 
-    const updatedTabs = filterTabsByIds(removedTabsPaths, tabs.value);
+    const updatedTabs = filterTabsByIds(removedTabsPaths, tabs.value)
 
     function update() {
-      tabs.value = updatedTabs;
+      tabs.value = updatedTabs
     }
 
     if (!isRemoveActiveTab) {
-      update();
-      return;
+      update()
+      return
     }
 
-    const activeTab = updatedTabs[updatedTabs.length - 1] || homeTab.value;
+    const activeTab = updatedTabs[updatedTabs.length - 1] || homeTab.value
 
-    await switchRouteByTab(activeTab);
-    update();
+    await switchRouteByTab(activeTab)
+    update()
   }
 
   /**
@@ -179,10 +182,10 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
    * @param tab Tab 信息
    */
   async function switchRouteByTab(tab: App.Global.Tab) {
-    const fail = await routerPush(tab.fullPath);
+    const fail = await routerPush(tab.fullPath)
 
     if (!fail) {
-      setActiveTabPath(tab.path);
+      setActiveTabPath(tab.path)
     }
   }
 
@@ -192,17 +195,17 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
    * @param tabPath 当前 Tab 路径
    */
   async function clearLeftTabs(tabPath: string) {
-    const tabIds = tabs.value.map(tab => tab.path);
+    const tabIds = tabs.value.map(tab => tab.path)
 
-    const index = tabIds.indexOf(tabPath);
+    const index = tabIds.indexOf(tabPath)
 
     if (index === -1) {
-      return;
+      return
     }
 
-    const excludes = tabIds.slice(index);
+    const excludes = tabIds.slice(index)
 
-    await clearTabs(excludes);
+    await clearTabs(excludes)
   }
 
   /**
@@ -211,24 +214,24 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
    * @param tabPath 当前 Tab 路径
    */
   async function clearRightTabs(tabPath: string) {
-    const isHomeTab = tabPath === homeTab.value?.path;
+    const isHomeTab = tabPath === homeTab.value?.path
 
     if (isHomeTab) {
-      clearTabs();
-      return;
+      clearTabs()
+      return
     }
 
-    const tabIds = tabs.value.map(tab => tab.path);
+    const tabIds = tabs.value.map(tab => tab.path)
 
-    const index = tabIds.indexOf(tabPath);
+    const index = tabIds.indexOf(tabPath)
 
     if (index === -1) {
-      return;
+      return
     }
 
-    const excludes = tabIds.slice(0, index + 1);
+    const excludes = tabIds.slice(0, index + 1)
 
-    await clearTabs(excludes);
+    await clearTabs(excludes)
   }
 
   /**
@@ -238,16 +241,16 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
    * @param tabId Tab ID（默认为当前激活的 Tab ID）
    */
   function setTabLabel(label: string, tabId?: string) {
-    const path = tabId || activeTabPath.value;
+    const path = tabId || activeTabPath.value
 
-    const tab = tabs.value.find(item => item.path === path);
+    const tab = tabs.value.find(item => item.path === path)
 
     if (!tab) {
-      return;
+      return
     }
 
-    tab.oldLabel = tab.label;
-    tab.newLabel = label;
+    tab.oldLabel = tab.label
+    tab.newLabel = label
   }
 
   /**
@@ -256,15 +259,15 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
    * @param tabPath Tab ID（默认为当前激活的 Tab ID）
    */
   function resetTabLabel(tabPath?: string) {
-    const path = tabPath || activeTabPath.value;
+    const path = tabPath || activeTabPath.value
 
-    const tab = tabs.value.find(item => item.path === path);
+    const tab = tabs.value.find(item => item.path === path)
 
     if (!tab) {
-      return;
+      return
     }
 
-    tab.newLabel = undefined;
+    tab.newLabel = undefined
   }
 
   /**
@@ -274,27 +277,27 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
    */
   function isTabRetain(tabPath: string) {
     if (tabPath === homeTab.value?.path) {
-      return true;
+      return true
     }
 
-    const fixedTabIds = getFixedTabPaths(tabs.value);
+    const fixedTabIds = getFixedTabPaths(tabs.value)
 
-    return fixedTabIds.includes(tabPath);
+    return fixedTabIds.includes(tabPath)
   }
 
   /** 缓存 Tab */
   function cacheTabs() {
     if (!themeStore.tab.cache) {
-      return;
+      return
     }
 
-    localStg.set('globalTabs', tabs.value);
+    localStg.set('globalTabs', tabs.value)
   }
 
   // 在页面关闭或刷新时缓存 Tab
   useEventListener(window, 'beforeunload', () => {
-    cacheTabs();
-  });
+    cacheTabs()
+  })
 
   return {
     /** 所有 Tab */
@@ -346,6 +349,6 @@ export const useTabStore = defineStore(SetupStoreId.Tab, () => {
     getTabPathByRoute,
 
     /** 缓存 Tab */
-    cacheTabs
-  };
-});
+    cacheTabs,
+  }
+})

@@ -1,37 +1,41 @@
+import systemLogo from '@/assets/svg-icon/logo.svg?raw'
+
+import { DARK_CLASS } from '@/constants/app'
+
+import { toggleHtmlClass } from '@/utils/common'
+
+import { localStg } from '@/utils/storage'
+
 // @unocss-include
-import { getRgb } from '@sa/color';
-import { localStg } from '@/utils/storage';
-import systemLogo from '@/assets/svg-icon/logo.svg?raw';
-import { DARK_CLASS } from '@/constants/app';
-import { toggleHtmlClass } from '@/utils/common';
+import { getRgb } from '@sa/color'
 
 export function setupLoading() {
-  const themeColor = localStg.get('themeColor') || '#646cff';
+  const themeColor = localStg.get('themeColor') || '#646cff'
 
-  const darkMode = localStg.get('darkMode') || false;
+  const darkMode = localStg.get('darkMode') || false
 
-  const { r, g, b } = getRgb(themeColor);
+  const { r, g, b } = getRgb(themeColor)
 
-  const primaryColor = `--primary-color: ${r} ${g} ${b}`;
+  const primaryColor = `--primary-color: ${r} ${g} ${b}`
 
   if (darkMode) {
-    toggleHtmlClass(DARK_CLASS).add();
+    toggleHtmlClass(DARK_CLASS).add()
   }
 
   const loadingClasses = [
     'left-0 top-0',
     'left-0 bottom-0 animate-delay-500',
     'right-0 top-0 animate-delay-1000',
-    'right-0 bottom-0 animate-delay-1500'
-  ];
+    'right-0 bottom-0 animate-delay-1500',
+  ]
 
-  const logoWithClass = systemLogo.replace('<svg', `<svg class="size-128px text-primary"`);
+  const logoWithClass = systemLogo.replace('<svg', `<svg class="size-128px text-primary"`)
 
   const dot = loadingClasses
-    .map(item => {
-      return `<div class="absolute w-16px h-16px bg-primary rounded-8px animate-pulse ${item}"></div>`;
+    .map((item) => {
+      return `<div class="absolute w-16px h-16px bg-primary rounded-8px animate-pulse ${item}"></div>`
     })
-    .join('\n');
+    .join('\n')
 
   const loading = `
   <div class="fixed-center flex-col bg-layout" style="${primaryColor}">
@@ -42,11 +46,11 @@ export function setupLoading() {
       </div>
     </div>
     <h2 class="text-28px font-500 text-primary">weiShaoY</h2>
-  </div>`;
+  </div>`
 
-  const app = document.getElementById('app');
+  const app = document.getElementById('app')
 
   if (app) {
-    app.innerHTML = loading;
+    app.innerHTML = loading
   }
 }

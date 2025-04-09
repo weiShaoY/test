@@ -1,12 +1,19 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import type { AdminLayoutProps } from '../../types';
-import { LAYOUT_MAX_Z_INDEX, LAYOUT_SCROLL_EL_ID, createLayoutCssVars } from './shared';
-import style from './index.module.css';
+import type { AdminLayoutProps } from '../../types'
+
+import { computed } from 'vue'
+
+import style from './index.module.css'
+
+import {
+  createLayoutCssVars,
+  LAYOUT_MAX_Z_INDEX,
+  LAYOUT_SCROLL_EL_ID,
+} from './shared'
 
 defineOptions({
-  name: 'AdminLayout'
-});
+  name: 'AdminLayout',
+})
 
 const props = withDefaults(defineProps<AdminLayoutProps>(), {
   mode: 'vertical',
@@ -25,102 +32,123 @@ const props = withDefaults(defineProps<AdminLayoutProps>(), {
   siderCollapsedWidth: 64,
   footerVisible: true,
   footerHeight: 48,
-  rightFooter: false
-});
+  rightFooter: false,
+})
 
-interface Emits {
+const emit = defineEmits<Emits>()
+
+const slots = defineSlots<Slots>()
+
+type Emits = {
+
   /** Update siderCollapse */
-  (e: 'update:siderCollapse', collapse: boolean): void;
+  (e: 'update:siderCollapse', collapse: boolean): void
 }
 
-const emit = defineEmits<Emits>();
-
-type SlotFn = (props?: Record<string, unknown>) => any;
+type SlotFn = (props?: Record<string, unknown>) => any
 
 type Slots = {
+
   /** Main */
-  default?: SlotFn;
+  default?: SlotFn
+
   /** Header */
-  header?: SlotFn;
+  header?: SlotFn
+
   /** Tab */
-  tab?: SlotFn;
+  tab?: SlotFn
+
   /** Sider */
-  sider?: SlotFn;
+  sider?: SlotFn
+
   /** Footer */
-  footer?: SlotFn;
-};
+  footer?: SlotFn
+}
 
-const slots = defineSlots<Slots>();
-
-const cssVars = computed(() => createLayoutCssVars(props));
+const cssVars = computed(() => createLayoutCssVars(props))
 
 // config visible
-const showHeader = computed(() => Boolean(slots.header) && props.headerVisible);
-const showTab = computed(() => Boolean(slots.tab) && props.tabVisible);
-const showSider = computed(() => !props.isMobile && Boolean(slots.sider) && props.siderVisible);
-const showMobileSider = computed(() => props.isMobile && Boolean(slots.sider) && props.siderVisible);
-const showFooter = computed(() => Boolean(slots.footer) && props.footerVisible);
+const showHeader = computed(() => Boolean(slots.header) && props.headerVisible)
+
+const showTab = computed(() => Boolean(slots.tab) && props.tabVisible)
+
+const showSider = computed(() => !props.isMobile && Boolean(slots.sider) && props.siderVisible)
+
+const showMobileSider = computed(() => props.isMobile && Boolean(slots.sider) && props.siderVisible)
+
+const showFooter = computed(() => Boolean(slots.footer) && props.footerVisible)
 
 // scroll mode
-const isWrapperScroll = computed(() => props.scrollMode === 'wrapper');
-const isContentScroll = computed(() => props.scrollMode === 'content');
+const isWrapperScroll = computed(() => props.scrollMode === 'wrapper')
+
+const isContentScroll = computed(() => props.scrollMode === 'content')
 
 // layout direction
-const isVertical = computed(() => props.mode === 'vertical');
-const isHorizontal = computed(() => props.mode === 'horizontal');
+const isVertical = computed(() => props.mode === 'vertical')
 
-const fixedHeaderAndTab = computed(() => props.fixedTop || (isHorizontal.value && isWrapperScroll.value));
+const isHorizontal = computed(() => props.mode === 'horizontal')
+
+const fixedHeaderAndTab = computed(() => props.fixedTop || (isHorizontal.value && isWrapperScroll.value))
 
 // css
 const leftGapClass = computed(() => {
   if (!props.fullContent && showSider.value) {
-    return props.siderCollapse ? style['left-gap_collapsed'] : style['left-gap'];
+    return props.siderCollapse ? style['left-gap_collapsed'] : style['left-gap']
   }
 
-  return '';
-});
+  return ''
+})
 
-const headerLeftGapClass = computed(() => (isVertical.value ? leftGapClass.value : ''));
+const headerLeftGapClass = computed(() => (isVertical.value ? leftGapClass.value : ''))
 
 const footerLeftGapClass = computed(() => {
-  const condition1 = isVertical.value;
-  const condition2 = isHorizontal.value && isWrapperScroll.value && !props.fixedFooter;
-  const condition3 = Boolean(isHorizontal.value && props.rightFooter);
+  const condition1 = isVertical.value
+
+  const condition2 = isHorizontal.value && isWrapperScroll.value && !props.fixedFooter
+
+  const condition3 = Boolean(isHorizontal.value && props.rightFooter)
 
   if (condition1 || condition2 || condition3) {
-    return leftGapClass.value;
+    return leftGapClass.value
   }
 
-  return '';
-});
+  return ''
+})
 
 const siderPaddingClass = computed(() => {
-  let cls = '';
+  let cls = ''
 
   if (showHeader.value && !headerLeftGapClass.value) {
-    cls += style['sider-padding-top'];
-  }
-  if (showFooter.value && !footerLeftGapClass.value) {
-    cls += ` ${style['sider-padding-bottom']}`;
+    cls += style['sider-padding-top']
   }
 
-  return cls;
-});
+  if (showFooter.value && !footerLeftGapClass.value) {
+    cls += ` ${style['sider-padding-bottom']}`
+  }
+
+  return cls
+})
 
 function handleClickMask() {
-  emit('update:siderCollapse', true);
+  emit('update:siderCollapse', true)
 }
 </script>
 
 <template>
-  <div class="relative h-full" :class="[commonClass]" :style="cssVars">
+  <div
+    class="relative h-full"
+    :class="[commonClass]"
+    :style="cssVars"
+  >
     <div
       :id="isWrapperScroll ? scrollElId : undefined"
       class="h-full flex flex-col"
       :class="[commonClass, scrollWrapperClass, { 'overflow-y-auto': isWrapperScroll }]"
     >
       <!-- Header -->
-      <template v-if="showHeader">
+      <template
+        v-if="showHeader"
+      >
         <header
           v-show="!fullContent"
           class="flex-shrink-0"
@@ -129,20 +157,25 @@ function handleClickMask() {
             commonClass,
             headerClass,
             headerLeftGapClass,
-            { 'absolute top-0 left-0 w-full': fixedHeaderAndTab }
+            { 'absolute top-0 left-0 w-full': fixedHeaderAndTab },
           ]"
         >
-          <slot name="header"></slot>
+          <slot
+            name="header"
+          />
         </header>
+
         <div
           v-show="!fullContent && fixedHeaderAndTab"
           class="flex-shrink-0 overflow-hidden"
           :class="[style['layout-header-placement']]"
-        ></div>
+        />
       </template>
 
       <!-- Tab -->
-      <template v-if="showTab">
+      <template
+        v-if="showTab"
+      >
         <div
           class="flex-shrink-0"
           :class="[
@@ -151,20 +184,25 @@ function handleClickMask() {
             tabClass,
             { 'top-0!': fullContent || !showHeader },
             leftGapClass,
-            { 'absolute left-0 w-full': fixedHeaderAndTab }
+            { 'absolute left-0 w-full': fixedHeaderAndTab },
           ]"
         >
-          <slot name="tab"></slot>
+          <slot
+            name="tab"
+          />
         </div>
+
         <div
           v-show="fullContent || fixedHeaderAndTab"
           class="flex-shrink-0 overflow-hidden"
           :class="[style['layout-tab-placement']]"
-        ></div>
+        />
       </template>
 
       <!-- Sider -->
-      <template v-if="showSider">
+      <template
+        v-if="showSider"
+      >
         <aside
           v-show="!fullContent"
           class="absolute left-0 top-0 h-full"
@@ -172,32 +210,39 @@ function handleClickMask() {
             commonClass,
             siderClass,
             siderPaddingClass,
-            siderCollapse ? style['layout-sider_collapsed'] : style['layout-sider']
+            siderCollapse ? style['layout-sider_collapsed'] : style['layout-sider'],
           ]"
         >
-          <slot name="sider"></slot>
+          <slot
+            name="sider"
+          />
         </aside>
       </template>
 
       <!-- Mobile Sider -->
-      <template v-if="showMobileSider">
+      <template
+        v-if="showMobileSider"
+      >
         <aside
           class="absolute left-0 top-0 h-full w-0 bg-white"
           :class="[
             commonClass,
             mobileSiderClass,
             style['layout-mobile-sider'],
-            siderCollapse ? 'overflow-hidden' : style['layout-sider']
+            siderCollapse ? 'overflow-hidden' : style['layout-sider'],
           ]"
         >
-          <slot name="sider"></slot>
+          <slot
+            name="sider"
+          />
         </aside>
+
         <div
           v-show="!siderCollapse"
           class="absolute left-0 top-0 h-full w-full bg-[rgba(0,0,0,0.2)]"
           :class="[style['layout-mobile-sider-mask']]"
           @click="handleClickMask"
-        ></div>
+        />
       </template>
 
       <!-- Main Content -->
@@ -206,11 +251,13 @@ function handleClickMask() {
         class="flex flex-col flex-grow"
         :class="[commonClass, contentClass, leftGapClass, { 'overflow-y-auto': isContentScroll }]"
       >
-        <slot></slot>
+        <slot />
       </main>
 
       <!-- Footer -->
-      <template v-if="showFooter">
+      <template
+        v-if="showFooter"
+      >
         <footer
           v-show="!fullContent"
           class="flex-shrink-0"
@@ -219,16 +266,19 @@ function handleClickMask() {
             commonClass,
             footerClass,
             footerLeftGapClass,
-            { 'absolute left-0 bottom-0 w-full': fixedFooter }
+            { 'absolute left-0 bottom-0 w-full': fixedFooter },
           ]"
         >
-          <slot name="footer"></slot>
+          <slot
+            name="footer"
+          />
         </footer>
+
         <div
           v-show="!fullContent && fixedFooter"
           class="flex-shrink-0 overflow-hidden"
           :class="[style['layout-footer-placement']]"
-        ></div>
+        />
       </template>
     </div>
   </div>

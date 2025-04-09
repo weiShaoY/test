@@ -1,46 +1,52 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import type { Placement } from 'element-plus';
+import type { Placement } from 'element-plus'
 
-defineOptions({ name: 'ThemeSchemaSwitch' });
+import { computed } from 'vue'
 
-interface Props {
-  /** 主题方案 */
-  themeSchema: UnionKey.ThemeScheme;
-  /** 显示工具提示 */
-  showTooltip?: boolean;
-  /** 工具提示位置 */
-  tooltipPlacement?: Placement;
-}
+defineOptions({
+  name: 'ThemeSchemaSwitch',
+})
 
 const props = withDefaults(defineProps<Props>(), {
   showTooltip: true,
-  tooltipPlacement: 'bottom'
-});
+  tooltipPlacement: 'bottom',
+})
 
-interface Emits {
-  (e: 'switch'): void;
+const emit = defineEmits<Emits>()
+
+type Props = {
+
+  /** 主题方案 */
+  themeSchema: UnionKey.ThemeScheme
+
+  /** 显示工具提示 */
+  showTooltip?: boolean
+
+  /** 工具提示位置 */
+  tooltipPlacement?: Placement
 }
 
-const emit = defineEmits<Emits>();
+type Emits = {
+  (e: 'switch'): void
+}
 
 function handleSwitch() {
-  emit('switch');
+  emit('switch')
 }
 
 const icons: Record<UnionKey.ThemeScheme, string> = {
   light: 'blog-theme-light',
   dark: 'blog-theme-dark',
-  auto: 'blog-theme-auto'
-};
+  auto: 'blog-theme-auto',
+}
 
-const icon = computed(() => icons[props.themeSchema]);
+const icon = computed(() => icons[props.themeSchema])
 
 const tooltipContent = computed(() => {
-  if (!props.showTooltip) return '';
+  if (!props.showTooltip) { return '' }
 
-  return '主题模式';
-});
+  return '主题模式'
+})
 </script>
 
 <template>

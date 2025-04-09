@@ -1,4 +1,4 @@
-import { SIMPLE_LAYOUT } from '@/layouts';
+import { SIMPLE_LAYOUT } from '@/layouts'
 
 /** 错误路由 */
 const errorRouter: RouterType.RouteRecordRaw[] = [
@@ -11,10 +11,10 @@ const errorRouter: RouterType.RouteRecordRaw[] = [
         name: '403',
         component: () => import('@/pages/error/403/index.vue'),
         meta: {
-          title: '403'
-        }
-      }
-    ]
+          title: '403',
+        },
+      },
+    ],
   },
   {
     path: '/404',
@@ -25,10 +25,10 @@ const errorRouter: RouterType.RouteRecordRaw[] = [
         name: '404',
         component: () => import('@/pages/error/404/index.vue'),
         meta: {
-          title: '404'
-        }
-      }
-    ]
+          title: '404',
+        },
+      },
+    ],
   },
   {
     path: '/500',
@@ -39,19 +39,19 @@ const errorRouter: RouterType.RouteRecordRaw[] = [
         name: '500',
         component: () => import('@/pages/error/500/index.vue'),
         meta: {
-          title: '500'
-        }
-      }
-    ]
+          title: '500',
+        },
+      },
+    ],
   },
   {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: () => import('@/pages/error/404/index.vue'),
     meta: {
-      title: 'not-found'
-    }
-  }
-];
+      title: 'not-found',
+    },
+  },
+]
 
-export default errorRouter;
+export default errorRouter

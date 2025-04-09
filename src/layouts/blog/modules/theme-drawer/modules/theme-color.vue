@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { useThemeStore } from '@/store/modules/theme';
+import { useThemeStore } from '@/store/modules/theme'
 
-import SettingItem from '../components/setting-item.vue';
+import SettingItem from '../components/setting-item.vue'
 
 defineOptions({
-  name: 'ThemeColor'
-});
+  name: 'ThemeColor',
+})
 
-const themeStore = useThemeStore();
+const themeStore = useThemeStore()
 
 /**
  * 更新主题颜色
@@ -17,7 +17,7 @@ const themeStore = useThemeStore();
  */
 function handleUpdateColor(color: string | null, key: App.Theme.ThemeColorKey) {
   if (color !== null) {
-    themeStore.updateThemeColors(key, color);
+    themeStore.updateThemeColors(key, color)
   }
 }
 
@@ -38,20 +38,30 @@ const swatches: string[] = [
   '#eab308',
   '#84cc16',
   '#22c55e',
-  '#10b981'
-];
+  '#10b981',
+]
 </script>
 
 <template>
-  <ElDivider>主题颜色</ElDivider>
+  <ElDivider>
+    主题颜色
+  </ElDivider>
 
-  <div class="flex-col-stretch gap-[12px]">
-    <ElTooltip placement="top-start">
-      <template #content>
+  <div
+    class="flex-col-stretch gap-[12px]"
+  >
+    <ElTooltip
+      placement="top-start"
+    >
+      <template
+        #content
+      >
         <p>
-          <span class="pr-[12px]">推荐颜色的算法参照</span>
+          <span
+            class="pr-[12px]"
+          >推荐颜色的算法参照</span>
 
-          <br />
+          <br>
 
           <ElButton
             text
@@ -66,8 +76,13 @@ const swatches: string[] = [
         </p>
       </template>
 
-      <SettingItem key="recommend-color" label="应用推荐算法的颜色">
-        <ElSwitch v-model="themeStore.recommendColor" />
+      <SettingItem
+        key="recommend-color"
+        label="应用推荐算法的颜色"
+      >
+        <ElSwitch
+          v-model="themeStore.recommendColor"
+        />
       </SettingItem>
     </ElTooltip>
 
@@ -88,8 +103,15 @@ const swatches: string[] = [
                   : ''
       "
     >
-      <template v-if="key === 'info'" #suffix>
-        <ElCheckbox v-model="themeStore.isInfoFollowPrimary">跟随主色</ElCheckbox>
+      <template
+        v-if="key === 'info'"
+        #suffix
+      >
+        <ElCheckbox
+          v-model="themeStore.isInfoFollowPrimary"
+        >
+          跟随主色
+        </ElCheckbox>
       </template>
 
       <ElColorPicker

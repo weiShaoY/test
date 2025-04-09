@@ -1,40 +1,56 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { LAYOUT_SCROLL_EL_ID } from '@sa/materials';
-import { useAppStore } from '@/store/modules/app';
-import { useThemeStore } from '@/store/modules/theme';
-import { useRouteStore } from '@/store/modules/route';
-import { useTabStore } from '@/store/modules/tab';
+import { useAppStore } from '@/store/modules/app'
 
-defineOptions({ name: 'GlobalContent' });
+import { useRouteStore } from '@/store/modules/route'
 
-interface Props {
-  /** 是否显示内容的内边距 */
-  showPadding?: boolean;
-}
+import { useTabStore } from '@/store/modules/tab'
+
+import { useThemeStore } from '@/store/modules/theme'
+
+import { LAYOUT_SCROLL_EL_ID } from '@sa/materials'
+
+import { computed } from 'vue'
+
+defineOptions({
+  name: 'GlobalContent',
+})
 
 withDefaults(defineProps<Props>(), {
-  showPadding: true
-});
+  showPadding: true,
+})
 
-const appStore = useAppStore();
-const themeStore = useThemeStore();
-const routeStore = useRouteStore();
-const tabStore = useTabStore();
+type Props = {
+
+  /** 是否显示内容的内边距 */
+  showPadding?: boolean
+}
+
+const appStore = useAppStore()
+
+const themeStore = useThemeStore()
+
+const routeStore = useRouteStore()
+
+const tabStore = useTabStore()
 
 /** 计算过渡动画名称 */
-const transitionName = computed(() => (themeStore.page.animate ? themeStore.page.animateMode : ''));
+const transitionName = computed(() => (themeStore.page.animate ? themeStore.page.animateMode : ''))
 
 /** 重置滚动条位置 */
 function resetScroll() {
-  const el = document.querySelector(`#${LAYOUT_SCROLL_EL_ID}`);
+  const el = document.querySelector(`#${LAYOUT_SCROLL_EL_ID}`)
 
-  el?.scrollTo({ left: 0, top: 0 });
+  el?.scrollTo({
+    left: 0,
+    top: 0,
+  })
 }
 </script>
 
 <template>
-  <RouterView v-slot="{ Component, route }">
+  <RouterView
+    v-slot="{ Component, route }"
+  >
     <!-- 过渡效果 -->
     <Transition
       :name="transitionName"
@@ -44,7 +60,10 @@ function resetScroll() {
       @after-enter="appStore.setContentXScrollable(false)"
     >
       <!-- 缓存组件 -->
-      <KeepAlive :include="routeStore.cacheRoutes" :exclude="routeStore.excludeCacheRoutes">
+      <KeepAlive
+        :include="routeStore.cacheRoutes"
+        :exclude="routeStore.excludeCacheRoutes"
+      >
         <component
           :is="Component"
           v-if="appStore.reloadFlag"

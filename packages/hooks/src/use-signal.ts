@@ -1,15 +1,21 @@
-import { computed, ref, shallowRef, triggerRef } from 'vue';
 import type {
   ComputedGetter,
   DebuggerOptions,
   Ref,
   ShallowRef,
   WritableComputedOptions,
-  WritableComputedRef
-} from 'vue';
+  WritableComputedRef,
+} from 'vue'
 
-type Updater<T> = (value: T) => T;
-type Mutator<T> = (value: T) => void;
+import {
+  computed,
+  ref,
+  shallowRef,
+  triggerRef,
+} from 'vue'
+
+type Updater<T> = (value: T) => T
+type Mutator<T> = (value: T) => void
 
 /**
  * Signal is a reactive value that can be set, updated or mutated
@@ -36,8 +42,9 @@ type Mutator<T> = (value: T) => void;
  *   });
  *   ```
  */
-export interface Signal<T> {
-  (): Readonly<T>;
+export type Signal<T> = {
+  (): Readonly<T>
+
   /**
    * Set the value of the signal
    *
@@ -45,7 +52,8 @@ export interface Signal<T> {
    *
    * @param value
    */
-  set(value: T): void;
+  set: (value: T) => void
+
   /**
    * Update the value of the signal using an updater function
    *
@@ -53,7 +61,8 @@ export interface Signal<T> {
    *
    * @param updater
    */
-  update(updater: Updater<T>): void;
+  update: (updater: Updater<T>) => void
+
   /**
    * Mutate the value of the signal using a mutator function
    *
@@ -63,7 +72,8 @@ export interface Signal<T> {
    *
    * @param mutator
    */
-  mutate(mutator: Mutator<T>): void;
+  mutate: (mutator: Mutator<T>) => void
+
   /**
    * Get the reference of the signal
    *
@@ -81,64 +91,68 @@ export interface Signal<T> {
    * </script>
    * ```
    */
-  getRef(): Readonly<ShallowRef<Readonly<T>>>;
+  getRef: () => Readonly<ShallowRef<Readonly<T>>>
 }
 
-export interface ReadonlySignal<T> {
-  (): Readonly<T>;
+export type ReadonlySignal<T> = {
+  (): Readonly<T>
 }
 
-export interface SignalOptions {
+export type SignalOptions = {
+
   /**
    * Whether to use `ref` to store the value
    *
    * @default false use `sharedRef` to store the value
    */
-  useRef?: boolean;
+  useRef?: boolean
 }
 
 export function useSignal<T>(initialValue: T, options?: SignalOptions): Signal<T> {
-  const { useRef } = options || {};
-
-  const state = useRef ? (ref(initialValue) as Ref<T>) : shallowRef(initialValue);
-
-  return createSignal(state);
-}
-
-export function useComputed<T>(getter: ComputedGetter<T>, debugOptions?: DebuggerOptions): ReadonlySignal<T>;
-export function useComputed<T>(options: WritableComputedOptions<T>, debugOptions?: DebuggerOptions): Signal<T>;
-export function useComputed<T>(
-  getterOrOptions: ComputedGetter<T> | WritableComputedOptions<T>,
-  debugOptions?: DebuggerOptions
-) {
-  const isGetter = typeof getterOrOptions === 'function';
-
-  const computedValue = computed(getterOrOptions as any, debugOptions);
-
-  if (isGetter) {
-    return () => computedValue.value as ReadonlySignal<T>;
+  const { useRef } = options || {
   }
 
-  return createSignal(computedValue);
+  const state = useRef ? (ref(initialValue) as Ref<T>) : shallowRef(initialValue)
+
+  return createSignal(state)
+}
+
+export function useComputed<T>(getter: ComputedGetter<T>, debugOptions?: DebuggerOptions): ReadonlySignal<T>
+
+export function useComputed<T>(options: WritableComputedOptions<T>, debugOptions?: DebuggerOptions): Signal<T>
+
+export function useComputed<T>(
+  getterOrOptions: ComputedGetter<T> | WritableComputedOptions<T>,
+  debugOptions?: DebuggerOptions,
+) {
+  const isGetter = typeof getterOrOptions === 'function'
+
+  const computedValue = computed(getterOrOptions as any, debugOptions)
+
+  if (isGetter) {
+    return () => computedValue.value as ReadonlySignal<T>
+  }
+
+  return createSignal(computedValue)
 }
 
 function createSignal<T>(state: ShallowRef<T> | WritableComputedRef<T>): Signal<T> {
-  const signal = () => state.value;
+  const signal = () => state.value
 
   signal.set = (value: T) => {
-    state.value = value;
-  };
+    state.value = value
+  }
 
   signal.update = (updater: Updater<T>) => {
-    state.value = updater(state.value);
-  };
+    state.value = updater(state.value)
+  }
 
   signal.mutate = (mutator: Mutator<T>) => {
-    mutator(state.value);
-    triggerRef(state);
-  };
+    mutator(state.value)
+    triggerRef(state)
+  }
 
-  signal.getRef = () => state as Readonly<ShallowRef<Readonly<T>>>;
+  signal.getRef = () => state as Readonly<ShallowRef<Readonly<T>>>
 
-  return signal;
+  return signal
 }

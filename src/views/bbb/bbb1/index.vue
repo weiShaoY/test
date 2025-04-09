@@ -8,20 +8,32 @@ const stepList = [
   'Finance(Sylvia.Yuan、lina.zhuang)',
   'FPA Manager(Will.Jiang)',
   'PTP(leo.bao)',
-  '结束'
-];
+  '结束',
+]
 </script>
 
 <template>
-  <div class="aaa">
-    <div v-for="(item, index) in stepList" :key="item" :class="index === 0 ? 'item_1' : 'item_2'">
-      <div class="a" />
+  <div
+    class="aaa"
+  >
+    <div
+      v-for="(item, index) in stepList"
+      :key="item"
+      :class="index === 0 ? 'item_1' : 'item_2'"
+    >
+      <div
+        class="a"
+      />
 
-      <div class="b">
+      <div
+        class="b"
+      >
         {{ item }}
       </div>
 
-      <div class="c" />
+      <div
+        class="c"
+      />
     </div>
   </div>
 </template>

@@ -1,18 +1,18 @@
 <script setup>
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router'
 
 defineProps({
   /** 菜单列表 */
   menuList: {
     type: Array,
     required: true,
-    default: () => []
-  }
-});
+    default: () => [],
+  },
+})
 
-const route = useRoute();
+const route = useRoute()
 
-const router = useRouter();
+const router = useRouter()
 
 /**
  * 选择菜单项
@@ -20,18 +20,20 @@ const router = useRouter();
  * @param {string} key - 路由路径
  */
 function handleSelect(key) {
-  router.push(key); // 使用 Vue Router 跳转
+  router.push(key) // 使用 Vue Router 跳转
 }
 </script>
 
 <template>
-  <div class="hidden items-center gap-5 sm:flex">
+  <div
+    class="hidden items-center gap-5 sm:flex"
+  >
     <div
       v-for="item in menuList"
       :key="item.key"
       class="flex cursor-pointer items-center text-lg text-[#D0D2D6] font-bold hover:text-white"
       :class="{
-        'text-white': route.path === item.key
+        'text-white': route.path === item.key,
       }"
       @click="handleSelect(item.key)"
     >

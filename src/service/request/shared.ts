@@ -1,60 +1,65 @@
-import { localStg } from '@/utils/storage';
-import { fetchRefreshToken } from '../api';
-import type { RequestInstanceState } from './type';
+import type { RequestInstanceState } from './type'
+
+import { localStg } from '@/utils/storage'
+
+import { fetchRefreshToken } from '../api'
 
 export function getAuthorization() {
-  const token = localStg.get('token');
-  const Authorization = token ? `Bearer ${token}` : null;
+  const token = localStg.get('token')
 
-  return Authorization;
+  const Authorization = token ? `Bearer ${token}` : null
+
+  return Authorization
 }
 
 /** refresh token */
 async function handleRefreshToken() {
-  const rToken = localStg.get('refreshToken') || '';
-  const { error, data } = await fetchRefreshToken(rToken);
+  const rToken = localStg.get('refreshToken') || ''
+
+  const { error, data } = await fetchRefreshToken(rToken)
+
   if (!error) {
-    localStg.set('token', data.token);
-    localStg.set('refreshToken', data.refreshToken);
-    return true;
+    localStg.set('token', data.token)
+    localStg.set('refreshToken', data.refreshToken)
+    return true
   }
 
-  return false;
+  return false
 }
 
 export async function handleExpiredRequest(state: RequestInstanceState) {
   if (!state.refreshTokenFn) {
-    state.refreshTokenFn = handleRefreshToken();
+    state.refreshTokenFn = handleRefreshToken()
   }
 
-  const success = await state.refreshTokenFn;
+  const success = await state.refreshTokenFn
 
   setTimeout(() => {
-    state.refreshTokenFn = null;
-  }, 1000);
+    state.refreshTokenFn = null
+  }, 1000)
 
-  return success;
+  return success
 }
 
 export function showErrorMsg(state: RequestInstanceState, message: string) {
   if (!state.errMsgStack?.length) {
-    state.errMsgStack = [];
+    state.errMsgStack = []
   }
 
-  const isExist = state.errMsgStack.includes(message);
+  const isExist = state.errMsgStack.includes(message)
 
   if (!isExist) {
-    state.errMsgStack.push(message);
+    state.errMsgStack.push(message)
 
     window.$message?.error({
       message,
       onClose: () => {
-        state.errMsgStack = state.errMsgStack.filter(msg => msg !== message);
+        state.errMsgStack = state.errMsgStack.filter(msg => msg !== message)
 
         setTimeout(() => {
-          state.errMsgStack = [];
-        }, 5000);
-      }
-    });
+          state.errMsgStack = []
+        }, 5000)
+      },
+    })
   }
 }

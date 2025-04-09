@@ -1,15 +1,15 @@
 <script lang="ts" setup>
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router'
 
-const router = useRouter();
+const router = useRouter()
 
-const route = useRoute();
+const route = useRoute()
 
-const gotoPath = route.params.path as string;
+const gotoPath = route.params.path as string
 
 router.replace({
-  path: gotoPath
-});
+  path: gotoPath,
+})
 </script>
 
 <template>

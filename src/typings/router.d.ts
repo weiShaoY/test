@@ -1,72 +1,104 @@
-import 'vue-router';
+/** 路由类型 */
+declare namespace RouterType {
 
-declare module 'vue-router' {
-  interface RouteMeta {
-    /**
-     * Title of the route
-     *
-     * It can be used in document title
-     */
-    title: string;
-    /**
-     * I18n key of the route
-     *
-     * It's used in i18n, if it is set, the title will be ignored
-     */
-    i18nKey?: App.I18n.I18nKey | null;
-    /**
-     * Roles of the route
-     *
-     * Route can be accessed if the current user has at least one of the roles
-     *
-     * It only works when the route mode is "static", if the route mode is "dynamic", it will be ignored
-     */
-    roles?: string[];
-    /** Whether to cache the route */
-    keepAlive?: boolean | undefined;
-    /**
-     * Is constant route
-     *
-     * when it is set to true, there will be no login verification and no permission verification to access the route
-     */
-    constant?: boolean | undefined;
-    /**
-     * Iconify icon
-     *
-     * It can be used in the menu or breadcrumb
-     */
-    icon?: string;
-    /**
-     * Local icon
-     *
-     * In "src/assets/svg-icon", if it is set, the icon will be ignored
-     */
-    localIcon?: string;
-    /** Icon size. width and height are the same. */
-    iconFontSize?: number;
-    /** Router order */
-    order?: number | undefined;
-    /** The outer link of the route */
-    href?: string | null;
-    /** Whether to hide the route in the menu */
-    hideInMenu?: boolean | undefined;
-    /**
-     * The menu key will be activated when entering the route
-     *
-     * The route is not in the menu
-     *
-     * @example
-     *   the route is "user_detail", if it is set to "user_list", the menu "user_list" will be activated
-     */
-    activeMenu?: import('@elegant-router/types').RouteKey | undefined;
-    /**
-     * By default, the same route path will use one tab, even with different query, if set true, the route with
-     * different query will use different tabs
-     */
-    multiTab?: boolean | undefined;
-    /** If set, the route will be fixed in tabs, and the value is the order of fixed tabs */
-    fixedIndexInTab?: number | undefined;
-    /** if set query parameters, it will be automatically carried when entering the route */
-    query?: { key: string; value: string }[] | null;
+  import type { Component } from 'vue'
+
+  import type { RouteRecordRaw, RouteRedirect } from 'vue-router'
+
+  /** 路由类型 */
+  type RouteRecordRaw = {
+
+    /** 路由路径，例如 `/home` */
+    path: string
+
+    /** 路由名称（可选），用于命名路由 */
+    name?: string
+
+    /** 路由对应的组件，可以是直接的 Vue 组件或返回 Promise 的动态导入函数 */
+    component?: Component | (() => Promise<Component>)
+
+    /** 路由重定向，可以是路径字符串、路由对象或函数 */
+    redirect?: RouteRedirect
+
+    /** 路由别名，可以是字符串或字符串数组 */
+    alias?: string | string[]
+
+    /** 子路由配置数组 */
+    children?: RouteRecordRaw[]
+
+    /** 额外的元信息，可以存储权限、标题、缓存等自定义数据 */
+    meta?: Record<string, any>
+  }
+
+  /** 博客模块路由类型 */
+  type BlogRouteRecordRaw = {
+
+    /** 路由路径 */
+    path: string
+
+    /** 路由名称（唯一标识） */
+    name: string
+
+    /** 重定向地址 */
+    redirect?: string
+
+    /** 组件路径的异步导入 */
+    component?: Component | (() => Promise<Component>)
+
+    /** 路由元信息 */
+    meta: {
+
+      /** 菜单显示标题（必填） */
+      title: string
+
+      /** 菜单图标组件 */
+      icon?: string
+
+      /** 是否在菜单中隐藏该路由 */
+      isHideInMenu?: boolean
+
+      /** 进入该路由时激活的菜单键 */
+      activeMenu?: string
+
+      /** 是否缓存组件 */
+      keepAlive?: boolean
+
+      /** 菜单排序（越小越靠前） */
+      order?: number
+
+      /** 外链跳转地址 */
+      externalUrl?: string
+
+      /** 内嵌iframe地址 */
+      iframeUrl?: string
+
+      /** 文本徽标内容 */
+      textBadge?: string
+
+      /** 图标徽标组件（优先级高于textBadge） */
+      iconBadge?: string
+
+      /** 是否显示默认徽标 */
+      showDefaultBadge?: boolean
+
+      /** 默认情况下，相同路径的路由会共享一个标签页，若设置为true，则使用多个标签页 */
+      multiTab?: boolean
+
+      /** 若设置，路由将在标签页中固定显示，其值表示固定标签页的顺序（首页是特殊的，它将自动保持fixed） */
+      fixedIndexInTab?: number
+
+      /** 路由查询参数，如果设置的话，点击菜单进入该路由时会自动携带的query参数 */
+      query?: { key: string, value: string }[] | null
+    }
+
+    /** 路由查询参数，如果设置的话，点击菜单进入该路由时会自动携带的query参数 */
+    fullPath?: string
+
+    // query?: Record<string, string>;
+
+    matched?: RouteRecordNormalized[]
+
+    /** 子路由配置 */
+    children?: BlogRouteRecordRaw[]
   }
 }

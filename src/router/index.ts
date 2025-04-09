@@ -1,34 +1,40 @@
-import type { App } from 'vue';
+import type { App } from 'vue'
+
+import type { RouterHistory } from 'vue-router'
+
+import { BLOG_BASE_LAYOUT } from '@/layouts'
+
 import {
-  type RouterHistory,
   createMemoryHistory,
   createRouter,
   createWebHashHistory,
-  createWebHistory
-} from 'vue-router';
-import { BLOG_BASE_LAYOUT } from '@/layouts';
-import { createRouterGuard } from './guard';
+  createWebHistory,
 
-import { routeList } from './list';
+} from 'vue-router'
 
-import errorRouter from './modules/error';
+import { createRouterGuard } from './guard'
 
-const { VITE_ROUTER_HISTORY_MODE = 'history', VITE_BASE_URL } = import.meta.env;
+import { routeList } from './list'
+
+import errorRouter from './modules/error'
+
+const { VITE_ROUTER_HISTORY_MODE = 'history', VITE_BASE_URL } = import.meta.env
 
 const historyCreatorMap: Record<Env.RouterHistoryMode, (base?: string) => RouterHistory> = {
   hash: createWebHashHistory,
   history: createWebHistory,
-  memory: createMemoryHistory
-};
+  memory: createMemoryHistory,
+}
+
 export const ROOT_ROUTE = {
   name: 'root',
   path: '/',
   redirect: import.meta.env.VITE_ROUTE_HOME || '/blog',
   meta: {
     title: 'root',
-    constant: true
-  }
-};
+    constant: true,
+  },
+}
 
 export const router = createRouter({
   history: historyCreatorMap[VITE_ROUTER_HISTORY_MODE](VITE_BASE_URL),
@@ -38,15 +44,15 @@ export const router = createRouter({
       path: '/blog',
       component: BLOG_BASE_LAYOUT,
       children: routeList as any,
-      redirect: '/blog/aaa'
+      redirect: '/blog/aaa',
     },
-    ...(errorRouter as any)
-  ]
-});
+    ...(errorRouter as any),
+  ],
+})
 
 /** Setup Vue Router */
 export async function setupRouter(app: App) {
-  app.use(router);
-  createRouterGuard(router);
-  await router.isReady();
+  app.use(router)
+  createRouterGuard(router)
+  await router.isReady()
 }

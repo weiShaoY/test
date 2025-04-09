@@ -1,7 +1,10 @@
-import type { Router } from 'vue-router';
-import { createRouteGuard } from './route';
-import { createProgressGuard } from './progress';
-import { createDocumentTitleGuard } from './title';
+import type { Router } from 'vue-router'
+
+import { createProgressGuard } from './progress'
+
+import { createRouteGuard } from './route'
+
+import { createDocumentTitleGuard } from './title'
 
 /**
  * Router guard
@@ -9,7 +12,7 @@ import { createDocumentTitleGuard } from './title';
  * @param router - Router instance
  */
 export function createRouterGuard(router: Router) {
-  createProgressGuard(router);
-  createRouteGuard(router);
-  createDocumentTitleGuard(router);
+  createProgressGuard(router)
+  createRouteGuard(router)
+  createDocumentTitleGuard(router)
 }

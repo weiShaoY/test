@@ -4,17 +4,17 @@
  * @param menu
  */
 function transformMenuToBreadcrumb(menu: BlogType.BlogMenuItem) {
-  const { children, ...rest } = menu;
+  const { children, ...rest } = menu
 
   const breadcrumb: BlogType.Breadcrumb = {
-    ...rest
-  };
-
-  if (children?.length) {
-    breadcrumb.options = children.map(transformMenuToBreadcrumb);
+    ...rest,
   }
 
-  return breadcrumb;
+  if (children?.length) {
+    breadcrumb.options = children.map(transformMenuToBreadcrumb)
+  }
+
+  return breadcrumb
 }
 
 /**
@@ -26,10 +26,10 @@ function transformMenuToBreadcrumb(menu: BlogType.BlogMenuItem) {
  */
 export function getBreadcrumbsByRoute(
   route: RouterType.BlogRouteRecordRaw,
-  menus: BlogType.BlogMenuItem[]
+  menus: BlogType.BlogMenuItem[],
 ): BlogType.Breadcrumb[] {
   // 获取当前路由的名称作为 key
-  const path = route.path as string;
+  const path = route.path as string
 
   // 获取当前路由中 meta 中定义的 activeMenu，用于激活状态处理
   // const activeKey = route.meta?.activeMenu;
@@ -38,8 +38,8 @@ export function getBreadcrumbsByRoute(
   for (const menu of menus) {
     // 如果当前菜单 key 与路由 key 相同，直接返回该菜单的面包屑
     if (menu.path === path) {
-      console.log('%c Line:178 🍯 menu', 'color:#ffdd4d', menu);
-      return [transformMenuToBreadcrumb(menu)];
+      console.log('%c Line:178 🍯 menu', 'color:#ffdd4d', menu)
+      return [transformMenuToBreadcrumb(menu)]
     }
 
     // 如果当前菜单 key 与路由的 activeMenu 相同
@@ -64,15 +64,15 @@ export function getBreadcrumbsByRoute(
 
     // 如果当前菜单有子菜单，递归处理子菜单
     if (menu.children?.length) {
-      const result = getBreadcrumbsByRoute(route, menu.children);
+      const result = getBreadcrumbsByRoute(route, menu.children)
 
       // 如果在子菜单中找到了匹配的面包屑路径，添加父级菜单信息并返回
       if (result.length > 0) {
-        return [transformMenuToBreadcrumb(menu), ...result];
+        return [transformMenuToBreadcrumb(menu), ...result]
       }
     }
   }
 
   // 如果没有匹配成功，返回空数组
-  return [];
+  return []
 }

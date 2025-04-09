@@ -9,23 +9,24 @@ export function getMenuList(routeList: RouterType.BlogRouteRecordRaw[]) {
   function generateMenuList(routes: RouterType.BlogRouteRecordRaw[] = routeList): BlogType.BlogMenuItem[] {
     return routes
       .filter(route => route.meta && !route.meta.isHideInMenu) // 过滤掉隐藏路由
-      .map(route => {
-        const menuItem: BlogType.BlogMenuItem = route;
+      .map((route) => {
+        const menuItem: BlogType.BlogMenuItem = route
 
         // 递归处理子路由
         if (route.children?.length) {
-          menuItem.children = generateMenuList(route.children);
+          menuItem.children = generateMenuList(route.children)
 
           // 如果子菜单为空，则删除children属性
           if (menuItem.children.length === 0) {
-            delete menuItem.children;
+            delete menuItem.children
           }
         }
-        return menuItem;
-      });
+
+        return menuItem
+      })
   }
 
-  return generateMenuList();
+  return generateMenuList()
 }
 
 /**
@@ -44,7 +45,7 @@ export function getMenuList(routeList: RouterType.BlogRouteRecordRaw[]) {
  */
 function findMenuPath(targetKey: string, menu: BlogType.BlogMenuItem): string[] | null {
   // 存储当前搜索路径的数组
-  const pathList: string[] = [];
+  const pathList: string[] = []
 
   /**
    * 深度优先搜索(DFS)递归函数
@@ -54,11 +55,11 @@ function findMenuPath(targetKey: string, menu: BlogType.BlogMenuItem): string[] 
    */
   function dfs(item: BlogType.BlogMenuItem): boolean {
     // 将当前节点的key加入路径列表
-    pathList.push(item.path);
+    pathList.push(item.path)
 
     // 基础情况：找到目标key
     if (item.path === targetKey) {
-      return true;
+      return true
     }
 
     // 如果有子节点，递归搜索每个子节点
@@ -66,26 +67,26 @@ function findMenuPath(targetKey: string, menu: BlogType.BlogMenuItem): string[] 
       for (const child of item.children) {
         // 如果子节点搜索返回true，表示已找到，直接返回
         if (dfs(child)) {
-          return true;
+          return true
         }
       }
     }
 
     // 当前分支未找到目标，回溯：移除最后添加的key
-    pathList.pop();
+    pathList.pop()
 
     // 返回未找到
-    return false;
+    return false
   }
 
   // 从传入的menu节点开始搜索
   if (dfs(menu)) {
     // 如果找到，返回完整路径
-    return pathList;
+    return pathList
   }
 
   // 未找到目标key，返回null
-  return null;
+  return null
 }
 
 /**
@@ -96,22 +97,26 @@ function findMenuPath(targetKey: string, menu: BlogType.BlogMenuItem): string[] 
  */
 export function getSelectedMenuKeyPathByKey(selectedKey: string, menuList: BlogType.BlogMenuItem[]) {
   // 初始化存储路径的数组
-  const keyPath: string[] = [];
+  const keyPath: string[] = []
+
   // 遍历菜单树，使用some可以在找到后立即停止遍历
-  menuList.some(menu => {
+  menuList.some((menu) => {
     // 调用findMenuPath查找当前菜单项及其子菜单中是否存在目标key
-    const path = findMenuPath(selectedKey, menu);
+    const path = findMenuPath(selectedKey, menu)
+
     // 将查找结果转换为布尔值
-    const find = Boolean(path?.length);
+    const find = Boolean(path?.length)
+
     // 如果找到匹配的路径
     if (find) {
       // 将找到的路径展开并添加到keyPath数组中
       // 这里使用非空断言(!)因为我们已确认path有值
-      keyPath.push(...path!);
+      keyPath.push(...path!)
     }
-    // 返回查找结果，如果为true会停止后续遍历
-    return find;
-  });
 
-  return keyPath;
+    // 返回查找结果，如果为true会停止后续遍历
+    return find
+  })
+
+  return keyPath
 }

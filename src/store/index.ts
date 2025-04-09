@@ -1,8 +1,10 @@
-import type { App } from 'vue';
-import { createPinia } from 'pinia';
-import { resetSetupStore } from './plugins';
+import type { App } from 'vue'
 
-export * from './modules/blog';
+import { createPinia } from 'pinia'
+
+import { resetSetupStore } from './plugins'
+
+export * from './modules/blog'
 
 /**
  * 设置 Vue store 插件 Pinia
@@ -11,11 +13,11 @@ export * from './modules/blog';
  */
 export function setupStore(app: App) {
   // 创建 Pinia 实例
-  const store = createPinia();
+  const store = createPinia()
 
   // 使用自定义插件 resetSetupStore
-  store.use(resetSetupStore);
+  store.use(resetSetupStore)
 
   // 将 Pinia 实例安装到 Vue 应用
-  app.use(store);
+  app.use(store)
 }

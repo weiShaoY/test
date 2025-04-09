@@ -1,41 +1,54 @@
-/** The storage namespace */
+/** 存储命名空间 */
 declare namespace StorageType {
-  interface Session {
-    /** The theme color */
-    themeColor: string;
+  type Session = {
+
+    /** 主题颜色 */
+    themeColor: string
+
     // /**
-    //  * the theme settings
+    // /** 主题设置 */
     //  */
     // themeSettings: App.Theme.ThemeSetting;
   }
 
-  interface Local {
-    /** The i18n language */
-    lang: App.I18n.LangType;
-    /** The token */
-    token: string;
-    /** Fixed sider with mix-menu */
-    mixSiderFixed: CommonType.YesOrNo;
-    /** The refresh token */
-    refreshToken: string;
-    /** The theme color */
-    themeColor: string;
-    /** The dark mode */
-    darkMode: boolean;
-    /** The theme settings */
-    themeSettings: App.Theme.ThemeSetting;
+  type Local = {
+
+    /** 令牌 */
+    token: string
+
+    /** 混合菜单固定侧边栏 */
+    mixSiderFixed: CommonType.YesOrNo
+
+    /** 刷新令牌 */
+    refreshToken: string
+
+    /** 主题颜色 */
+    themeColor: string
+
+    /** 暗模式 */
+    darkMode: boolean
+
+    /** 主题设置 */
+    themeSettings: App.Theme.ThemeSetting
+
     /**
-     * The override theme flags
+     * 覆写主题标志
      *
-     * The value is the build time of the project
+     * 值为项目构建时间
      */
-    overrideThemeFlag: string;
-    /** The global tabs */
-    globalTabs: App.Global.Tab[];
-    /** The backup theme setting before is mobile */
+    overrideThemeFlag: string
+
+    /** 全局标签 */
+    globalTabs: App.Global.Tab[]
+
+    /** 移动端之前的备份主题设置 */
     backupThemeSettingBeforeIsMobile: {
-      layout: UnionKey.ThemeLayoutMode;
-      siderCollapse: boolean;
-    };
+
+      /** 布局模式 */
+      layout: UnionKey.ThemeLayoutMode
+
+      /** 侧边栏折叠状态 */
+      siderCollapse: boolean
+    }
   }
 }

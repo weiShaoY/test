@@ -1,18 +1,22 @@
 <script setup lang="ts">
 defineOptions({
-  name: 'ReloadButton'
-});
+  name: 'ReloadButton',
+})
 
-defineProps<Props>();
+defineProps<Props>()
 
 type Props = {
-  loading?: boolean;
-};
+  loading?: boolean
+}
 </script>
 
 <template>
-  <ButtonIcon tooltip-content="刷新页面">
-    <icon-ant-design-reload-outlined :class="{ 'animate-spin animate-duration-750': loading }" />
+  <ButtonIcon
+    tooltip-content="刷新页面"
+  >
+    <icon-ant-design-reload-outlined
+      :class="{ 'animate-spin animate-duration-750': loading }"
+    />
   </ButtonIcon>
 </template>
 

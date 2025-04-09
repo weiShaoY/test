@@ -5,14 +5,17 @@
  * @param treeMap
  */
 export function transformMenuToSearchMenuList(menus: BlogType.BlogMenuItem[], treeMap: BlogType.BlogMenuItem[] = []) {
-  if (menus && menus.length === 0) return [];
+  if (menus && menus.length === 0) { return [] }
+
   return menus.reduce((acc, cur) => {
     if (!cur.children) {
-      acc.push(cur);
+      acc.push(cur)
     }
+
     if (cur.children && cur.children.length > 0) {
-      transformMenuToSearchMenuList(cur.children, treeMap);
+      transformMenuToSearchMenuList(cur.children, treeMap)
     }
-    return acc;
-  }, treeMap);
+
+    return acc
+  }, treeMap)
 }

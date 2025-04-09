@@ -89,10 +89,10 @@
   },
   "devDependencies": {
     "@amap/amap-jsapi-types": "0.0.15",
+    "@antfu/eslint-config": "^4.5.1",
     "@iconify/json": "2.2.273",
     "@sa/scripts": "workspace:*",
     "@sa/uno-preset": "workspace:*",
-    "@soybeanjs/eslint-config": "1.4.2",
     "@types/bmapgl": "0.0.7",
     "@types/dompurify": "3.0.5",
     "@types/node": "22.9.0",
@@ -106,6 +106,7 @@
     "@vitejs/plugin-vue": "5.2.0",
     "@vitejs/plugin-vue-jsx": "4.1.0",
     "eslint": "9.14.0",
+    "eslint-plugin-format": "^1.0.1",
     "eslint-plugin-vue": "9.31.0",
     "lint-staged": "15.2.10",
     "sass": "1.83.0",
@@ -120,7 +121,6 @@
     "vue-eslint-parser": "9.4.3",
     "vue-tsc": "2.1.10"
   },
-
   "lint-staged": {
     "*": "eslint --fix"
   },

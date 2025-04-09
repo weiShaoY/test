@@ -1,27 +1,43 @@
 <script lang="ts" setup>
 defineOptions({
-  name: 'SearchFooter'
-});
+  name: 'SearchFooter',
+})
 </script>
 
 <template>
-  <div class="h-[44px] flex-y-center gap-[14px] px-[24px]">
-    <span class="flex-y-center">
-      <icon-mdi-keyboard-return class="operate-shadow operate-item" />
+  <div
+    class="h-[44px] flex-y-center gap-[14px] px-[24px]"
+  >
+    <span
+      class="flex-y-center"
+    >
+      <icon-mdi-keyboard-return
+        class="operate-shadow operate-item"
+      />
 
       <span>确认</span>
     </span>
 
-    <span class="flex-y-center">
-      <icon-mdi-arrow-up-thin class="operate-shadow operate-item" />
+    <span
+      class="flex-y-center"
+    >
+      <icon-mdi-arrow-up-thin
+        class="operate-shadow operate-item"
+      />
 
-      <icon-mdi-arrow-down-thin class="operate-shadow operate-item" />
+      <icon-mdi-arrow-down-thin
+        class="operate-shadow operate-item"
+      />
 
       <span>切换</span>
     </span>
 
-    <span class="flex-y-center">
-      <icon-mdi-keyboard-esc class="operate-shadow operate-item" />
+    <span
+      class="flex-y-center"
+    >
+      <icon-mdi-keyboard-esc
+        class="operate-shadow operate-item"
+      />
 
       <span>关闭</span>
     </span>

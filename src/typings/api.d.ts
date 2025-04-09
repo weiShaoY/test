@@ -5,23 +5,27 @@
  */
 declare namespace Api {
   namespace Common {
+
     /** common params of paginating */
-    interface PaginatingCommonParams {
+    type PaginatingCommonParams = {
+
       /** current page number */
-      current: number;
+      current: number
+
       /** page size */
-      size: number;
+      size: number
+
       /** total count */
-      total: number;
+      total: number
     }
 
     /** common params of paginating query list data */
-    interface PaginatingQueryRecord<T = any> extends PaginatingCommonParams {
-      records: T[];
-    }
+    type PaginatingQueryRecord<T = any> = {
+      records: T[]
+    } & PaginatingCommonParams
 
     /** common search params of table */
-    type CommonSearchParams = Pick<Common.PaginatingCommonParams, 'current' | 'size'>;
+    type CommonSearchParams = Pick<Common.PaginatingCommonParams, 'current' | 'size'>
 
     /**
      * enable status
@@ -29,23 +33,29 @@ declare namespace Api {
      * - "1": enabled
      * - "2": disabled
      */
-    type EnableStatus = '1' | '2';
+    type EnableStatus = '1' | '2'
 
     /** common record */
     type CommonRecord<T = any> = {
+
       /** record id */
-      id: number;
+      id: number
+
       /** record creator */
-      createBy: string;
+      createBy: string
+
       /** record create time */
-      createTime: string;
+      createTime: string
+
       /** record updater */
-      updateBy: string;
+      updateBy: string
+
       /** record update time */
-      updateTime: string;
+      updateTime: string
+
       /** record status */
-      status: EnableStatus | undefined;
-    } & T;
+      status: EnableStatus | undefined
+    } & T
   }
 
   /**
@@ -54,16 +64,16 @@ declare namespace Api {
    * backend api module: "auth"
    */
   namespace Auth {
-    interface LoginToken {
-      token: string;
-      refreshToken: string;
+    type LoginToken = {
+      token: string
+      refreshToken: string
     }
 
-    interface UserInfo {
-      userId: string;
-      userName: string;
-      roles: string[];
-      buttons: string[];
+    type UserInfo = {
+      userId: string
+      userName: string
+      roles: string[]
+      buttons: string[]
     }
   }
 
@@ -73,15 +83,15 @@ declare namespace Api {
    * backend api module: "route"
    */
   namespace Route {
-    type ElegantConstRoute = import('@elegant-router/types').ElegantConstRoute;
+    type ElegantConstRoute = import('@elegant-router/types').ElegantConstRoute
 
-    interface MenuRoute extends ElegantConstRoute {
-      id: string;
-    }
+    type MenuRoute = {
+      id: string
+    } & ElegantConstRoute
 
-    interface UserRoute {
-      routes: MenuRoute[];
-      home: import('@elegant-router/types').LastLevelRouteKey;
+    type UserRoute = {
+      routes: MenuRoute[]
+      home: import('@elegant-router/types').LastLevelRouteKey
     }
   }
 
@@ -91,28 +101,31 @@ declare namespace Api {
    * backend api module: "systemManage"
    */
   namespace SystemManage {
-    type CommonSearchParams = Pick<Common.PaginatingCommonParams, 'current' | 'size'>;
+    type CommonSearchParams = Pick<Common.PaginatingCommonParams, 'current' | 'size'>
 
     /** role */
     type Role = Common.CommonRecord<{
+
       /** role name */
-      roleName: string;
+      roleName: string
+
       /** role code */
-      roleCode: string;
+      roleCode: string
+
       /** role description */
-      roleDesc: string;
-    }>;
+      roleDesc: string
+    }>
 
     /** role search params */
     type RoleSearchParams = CommonType.RecordNullable<
       Pick<Api.SystemManage.Role, 'roleName' | 'roleCode' | 'status'> & CommonSearchParams
-    >;
+    >
 
     /** role list */
-    type RoleList = Common.PaginatingQueryRecord<Role>;
+    type RoleList = Common.PaginatingQueryRecord<Role>
 
     /** all role */
-    type AllRole = Pick<Role, 'id' | 'roleName' | 'roleCode'>;
+    type AllRole = Pick<Role, 'id' | 'roleName' | 'roleCode'>
 
     /**
      * user gender
@@ -120,32 +133,38 @@ declare namespace Api {
      * - "1": "male"
      * - "2": "female"
      */
-    type UserGender = '1' | '2';
+    type UserGender = '1' | '2'
 
     /** user */
     type User = Common.CommonRecord<{
+
       /** user name */
-      userName: string;
+      userName: string
+
       /** user gender */
-      userGender: UserGender | undefined;
+      userGender: UserGender | undefined
+
       /** user nick name */
-      nickName: string;
+      nickName: string
+
       /** user phone */
-      userPhone: string;
+      userPhone: string
+
       /** user email */
-      userEmail: string;
+      userEmail: string
+
       /** user role code collection */
-      userRoles: string[];
-    }>;
+      userRoles: string[]
+    }>
 
     /** user search params */
     type UserSearchParams = CommonType.RecordNullable<
       Pick<Api.SystemManage.User, 'userName' | 'userGender' | 'nickName' | 'userPhone' | 'userEmail' | 'status'> &
-        CommonSearchParams
-    >;
+      CommonSearchParams
+    >
 
     /** user list */
-    type UserList = Common.PaginatingQueryRecord<User>;
+    type UserList = Common.PaginatingQueryRecord<User>
 
     /**
      * menu type
@@ -153,18 +172,20 @@ declare namespace Api {
      * - "1": directory
      * - "2": menu
      */
-    type MenuType = '1' | '2';
+    type MenuType = '1' | '2'
 
     type MenuButton = {
+
       /**
        * button code
        *
        * it can be used to control the button permission
        */
-      code: string;
+      code: string
+
       /** button description */
-      desc: string;
-    };
+      desc: string
+    }
 
     /**
      * icon type
@@ -172,54 +193,64 @@ declare namespace Api {
      * - "1": iconify icon
      * - "2": local icon
      */
-    type IconType = '1' | '2';
+    type IconType = '1' | '2'
 
     type MenuPropsOfRoute = Pick<
       import('vue-router').RouteMeta,
-      | 'i18nKey'
-      | 'keepAlive'
-      | 'constant'
-      | 'order'
-      | 'href'
-      | 'hideInMenu'
-      | 'activeMenu'
-      | 'multiTab'
-      | 'fixedIndexInTab'
-      | 'query'
-    >;
+        | 'i18nKey'
+        | 'keepAlive'
+        | 'constant'
+        | 'order'
+        | 'href'
+        | 'hideInMenu'
+        | 'activeMenu'
+        | 'multiTab'
+        | 'fixedIndexInTab'
+        | 'query'
+    >
 
     type Menu = Common.CommonRecord<{
+
       /** parent menu id */
-      parentId: number;
+      parentId: number
+
       /** menu type */
-      menuType: MenuType;
+      menuType: MenuType
+
       /** menu name */
-      menuName: string;
+      menuName: string
+
       /** route name */
-      routeName: string;
+      routeName: string
+
       /** route path */
-      routePath: string;
+      routePath: string
+
       /** component */
-      component?: string;
+      component?: string
+
       /** iconify icon name or local icon name */
-      icon: string;
+      icon: string
+
       /** icon type */
-      iconType: IconType;
+      iconType: IconType
+
       /** buttons */
-      buttons?: MenuButton[] | null;
+      buttons?: MenuButton[] | null
+
       /** children menu */
-      children?: Menu[] | null;
+      children?: Menu[] | null
     }> &
-      MenuPropsOfRoute;
+    MenuPropsOfRoute
 
     /** menu list */
-    type MenuList = Common.PaginatingQueryRecord<Menu>;
+    type MenuList = Common.PaginatingQueryRecord<Menu>
 
     type MenuTree = {
-      id: number;
-      label: string;
-      pId: number;
-      children?: MenuTree[];
-    };
+      id: number
+      label: string
+      pId: number
+      children?: MenuTree[]
+    }
   }
 }
