@@ -37,7 +37,7 @@ export const useBlogStore = defineStore('blog', () => {
   const searchMenuList = computed(() => transformMenuToSearchMenuList(menuList.value))
 
   const breadcrumbList = computed(() =>
-    getBreadcrumbsByRoute(router.currentRoute.value as RouterType.BlogRouteRecordRaw, menuList.value),
+    getBreadcrumbsByRoute(router.currentRoute.value as any, menuList.value),
   )
 
   console.log('%c Line:113 🍊 breadcrumbList', 'color:#33a5ff', breadcrumbList.value)

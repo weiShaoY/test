@@ -29,7 +29,7 @@ const historyCreatorMap: Record<Env.RouterHistoryMode, (base?: string) => Router
 export const ROOT_ROUTE = {
   name: 'root',
   path: '/',
-  redirect: import.meta.env.VITE_ROUTE_HOME || '/blog',
+  redirect: import.meta.env.VITE_ROUTER_ROOT_REDIRECT_PATH,
   meta: {
     title: 'root',
     constant: true,
@@ -44,7 +44,7 @@ export const router = createRouter({
       path: '/blog',
       component: BLOG_BASE_LAYOUT,
       children: routeList as any,
-      redirect: '/blog/aaa',
+      redirect: import.meta.env.VITE_ROUTER_BLOG_PATH,
     },
     ...(errorRouter as any),
   ],
